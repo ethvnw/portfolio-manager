@@ -1,3 +1,8 @@
-.bg-navbar {
-  background-color: hsl(210, 80%, 80%);
+aside {
+  background-color: hsl(221, 32%, 15%);
+  width: 16rem;
+}
+
+.nav-link:hover, .nav-link:focus {
+  background: hsl(221, 32%, 10%);
 }

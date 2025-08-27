@@ -6,26 +6,26 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src="js/bootstrap.min.js")
 
+
   body
-    header
-      nav.navbar.navbar-expand-lg.bg-navbar
-        .container-fluid
-          a.navbar-brand(href="/")
-            //- img.img-fluid(width="40", src="/images/logo.png", alt="Logo")
+    .container-fluid.d-flex.h-100.p-0
+      aside.shadow.min-vh-100.py-4.px-2
+        nav.d-flex.flex-column.h-100.flex-grow-1
+          a.navbar-brand.px-3(href="/")
+            img(height=50, src="/images/logo.svg", alt="Apex Finance")
 
-          button.navbar-toggler(data-bs-toggle="collapse", data-bs-target="#navbarSupportedContent", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
-            span.navbar-toggler-icon
-          .collapse.navbar-collapse#navbarSupportedContent
-            ul.navbar-nav.ms-auto.mb-2.mb-lg-0.fw-semibold
-              li.nav-item
-                a.nav-link(href="#") Home
-              li.nav-item
-                a.nav-link(href="#") About
-              li.nav-item
-                a.nav-link(href="#") Contact
-    main
-      block content
+          hr.text-light
 
-    footer
-      p &copy; 2025 Ethan, Hassan, Mariam
+          ul.nav.flex-column.fw-semibold.gap-2.mt-3.flex-grow-1
+            li.nav-item
+              a.nav-link.fw-bold.text-light(href="/") Dashboard
+            li.nav-item
+              a.nav-link.fw-bold.text-light(href="#") Link 2
+            li.nav-item
+              a.nav-link.fw-bold.text-light(href="#") Link 3
+
+      main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column
+        block content
+        footer.mt-auto.text-center.text-muted
+          p &copy; 2025 Apex Finance
 
