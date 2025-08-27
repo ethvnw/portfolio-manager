@@ -149,6 +149,8 @@ const Transaction = seq.define('Transaction', {
 
 
 
+
+
 module.exports = {
     seq,
     User,
