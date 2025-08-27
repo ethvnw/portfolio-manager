@@ -2,12 +2,30 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel="stylesheet", href="/css/bootstrap.min.css")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="js/bootstrap.min.js")
 
   body
+    header
+      nav.navbar.navbar-expand-lg.bg-navbar
+        .container-fluid
+          a.navbar-brand(href="/")
+            //- img.img-fluid(width="40", src="/images/logo.png", alt="Logo")
+
+          button.navbar-toggler(data-bs-toggle="collapse", data-bs-target="#navbarSupportedContent", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+          .collapse.navbar-collapse#navbarSupportedContent
+            ul.navbar-nav.ms-auto.mb-2.mb-lg-0.fw-semibold
+              li.nav-item
+                a.nav-link(href="#") Home
+              li.nav-item
+                a.nav-link(href="#") About
+              li.nav-item
+                a.nav-link(href="#") Contact
     main
       block content
 
     footer
       p &copy; 2025 Ethan, Hassan, Mariam
+
