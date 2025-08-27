@@ -3,8 +3,6 @@ const app = express();
 const { sequelize, DataTypes } = require('sequelize');
 require("dotenv").config();
 
-
-
 const seq = new Sequelize('portfolio_manager', process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
     dialect: "mysql"
@@ -148,6 +146,30 @@ const Transaction = seq.define('Transaction', {
 });
 
 
+//current iteration, functionality to be changed
+async function getPortfolioByUserId(userId) {
+    return await Portfolio.findAll({
+        where: {
+            user_id: userId
+        }
+    });
+}
+
+async function getAssetsByPortfolioId(portfolioId) {
+    return await Asset.findAll({
+        where: {
+            portfolio_id: portfolioId
+        }
+    });
+}
+
+async function getTransactionsByPortfolioId(portfolioId) {
+    return await Transaction.findAll({
+        where: {
+            portfolio_id: portfolioId
+        }
+    });
+}
 
 
 
@@ -157,4 +179,7 @@ module.exports = {
     Portfolio,
     Asset,
     Transaction,
+    getPortfolioByUserId,
+    getAssetsByPortfolioId,
+    getTransactionsByPortfolioId
 };
