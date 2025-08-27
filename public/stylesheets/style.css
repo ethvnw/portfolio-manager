@@ -1,8 +1,8 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+aside {
+  background-color: hsl(221, 32%, 15%);
+  width: 16rem;
 }
 
-a {
-  color: #00B7FF;
+.nav-link:hover, .nav-link:focus {
+  background: hsl(221, 32%, 10%);
 }
