@@ -1,4 +1,3 @@
-doctype html
 html
   head
     title= title
@@ -6,8 +5,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src="js/bootstrap.min.js")
 
-
-  body
+  body.auth-background.text-light
     - if (notice.length || error.length)
       .position-absolute.top-0.start-50.translate-middle-x.w-100.p-3(style="max-width: 600px; z-index: 1050;")
         if (notice.length)
@@ -16,28 +14,6 @@ html
           .alert.alert-danger #{error}
 
     .container-fluid.d-flex.h-100.p-0
-      aside.shadow.min-vh-100.py-4.px-2
-        nav.d-flex.flex-column.h-100.flex-grow-1
-          a.navbar-brand.px-3(href="/")
-            img(height=50, src="/images/logo.svg", alt="Apex Finance")
-
-          hr.text-light
-
-          p.mb-0.text-light.px-3.fw-semibold Hi, #{email}
-
-          hr.text-light
-
-          ul.nav.flex-column.fw-semibold.gap-2.mt-3.flex-grow-1
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="/") Dashboard
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="/buyassets") Buy Assets 
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="/sellassets") Sell Assets 
-            li.nav-item
-              form(action="/logout", method="POST")
-                button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit") Logout
-
       main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column
         block content
         footer.mt-auto.text-center.text-muted

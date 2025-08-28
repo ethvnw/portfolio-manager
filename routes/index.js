@@ -1,17 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const { ensureAuthenticated } = require("../middleware/auth");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { const1: 'value' });
+router.get("/", ensureAuthenticated, (req, res, next) => {
+  res.render("index");
 });
 
-router.get('/buyassets', function(req, res, next) {
-  res.render('buyassets.pug', { const1: 'value' });
+router.get("/buyassets", function (req, res, next) {
+  res.render("buyassets.pug", { const1: "value" });
 });
 
-router.get('/sellassets', function(req, res, next) {
-  res.render('sellassets.pug', { const1: 'value' });
+router.get("/sellassets", function (req, res, next) {
+  res.render("sellassets.pug", { const1: "value" });
 });
 
 module.exports = router;
