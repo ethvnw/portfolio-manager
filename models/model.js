@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
-const { Sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require('sequelize');
+const md5 = require('js-md5');
 require("dotenv").config();
 
-const seq = new Sequelize(
-  "portfolio_manager",
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
+
+const seq = new Sequelize('portfolio_manager', process.env.DB_USER, process.env.DB_PASSWORD, {
+
     host: process.env.DB_HOST,
     dialect: "mysql",
   }
@@ -128,12 +127,51 @@ async function getAssetsByType(type) {
   });
 }
 
+//creating user
+async function createUser(email, hashed_pass) {
+    return await User.create({
+        email: email,
+        hashed_pass: hashed_pass
+    });
+}
+
+//getting user by email
+async function getUserByEmail(email) {
+    return await User.findOne({
+        where: {
+            email: email
+        }
+    });
+}
+
+//changing asset type
+async function changeAssetType(assetId, newType) {
+    return await Asset.update(
+        { type: newType },
+        { where: { id: assetId } }
+    );
+}
+
+//deleting sold assets if they no longer want them on their portfolio
+async function deleteAssetIfSold(assetId) {
+    const asset = await Asset.findOne({ where: { id: assetId } });
+    if (asset && asset.type === 'sell') {
+        return await Asset.destroy({ 
+            where: { id: assetId } 
+        });
+    }
+    return 0;
+}
 module.exports = {
-  seq,
-  User,
-  Asset,
-  getAssetsByUserId,
-  getAssetsByCategory,
-  getAssetsByTicker,
-  getAssetsByType,
+
+    seq,
+    User,
+    Asset,
+    getAssetsByUserId,
+    getAssetsByCategory,
+    getAssetsByTicker,
+    getAssetsByType,
+    createUser,    getUserByEmail,
+    changeAssetType,
+    deleteAssetIfSold
 };
