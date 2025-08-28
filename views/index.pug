@@ -8,7 +8,7 @@ block content
     .chart
       h3 Asset Allocation
       script(src="https://cdn.jsdelivr.net/npm/chart.js")
-      canvas#assetChart(width="400" height="200") // Adjusted dimensions
+      canvas#assetChart(style="max-width:250px; max-height:250px;") // Adjusted dimensions
       script.
         const ctx = document.getElementById('assetChart').getContext('2d');
         const assetChart = new Chart(ctx, {
