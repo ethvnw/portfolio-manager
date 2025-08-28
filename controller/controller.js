@@ -114,8 +114,8 @@ module.exports = {
     getAssetsByCategory,
     getAssetsByTicker,
     getAssetsByType,
-    createUser,
-    getUserByEmail,
+    // createUser,
+    // getUserByEmail,
     changeAssetType,
     deleteAssetIfSold
 };

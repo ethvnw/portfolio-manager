@@ -18,12 +18,12 @@ router.get("/sellassets", function (req, res, next) {
 
 
 // restful API routes
-router.get("/users/:email", controller.getUserByEmail);
+// router.get("/users/:email", controller.getUserByEmail);
 router.get("/assets/user/:userId", controller.getAssetsByUserId);
 router.get("/assets/category/:category", controller.getAssetsByCategory);
 router.get("/assets/ticker/:ticker", controller.getAssetsByTicker);
 router.get("/assets/type/:type", controller.getAssetsByType);
-router.post("/users", controller.createUser);
+// router.post("/users", controller.createUser);
 router.put("/assets/:ticker/type", controller.changeAssetType);
 router.delete("/assets/:ticker", controller.deleteAssetIfSold);
 
