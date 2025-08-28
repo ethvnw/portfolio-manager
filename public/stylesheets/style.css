@@ -1,5 +1,13 @@
+:root {
+  --accent-color: hsl(221, 32%, 15%);
+}
+
+.auth-background {
+  background-color: var(--accent-color);
+}
+
 aside {
-  background-color: hsl(221, 32%, 15%);
+  background-color: var(--accent-color);
   width: 16rem;
 }
 
