@@ -1,0 +1,54 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "APEX Finance",
+        "description": "Platform to manage financial portfolio",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "A list of users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "hashed_pass": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
