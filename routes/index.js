@@ -4,6 +4,7 @@ const controller = require("../controller/controller");
 const { ensureAuthenticated } = require("../middleware/auth");
 const { getAssetsByUserId, Asset } = require("../models/model");
 const axios = require("axios");
+const controller = require("../controller/controller");
 require("dotenv").config();
 
 router.get("/", ensureAuthenticated, (req, res, next) => {
