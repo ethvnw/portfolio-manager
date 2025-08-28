@@ -1,0 +1,23 @@
+extends layout
+block content 
+        header
+            h1 Sell Assets 
+        main
+            section
+               
+                form(action="/sellassets" method="POST")
+                    div
+                        label(for="assetName") Asset Name:
+                        input.form-control(type="text" id="assetName" name="assetName" required)
+                    div
+                        label(for="quantity") Quantity:
+                        input.form-control(type="number" id="quantity" name="quantity" min="1" required)
+                    div
+                        label(for="price") Selling Price (per unit):
+                        input.form-control(type="number" id="price" name="price" step="0.01" required)
+                    div
+                        button(type="submit") Sell Asset
+
+        script(src="/scripts.js")   
+        footer
+            p 2025 Apex Finance 
