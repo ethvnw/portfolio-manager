@@ -16,7 +16,7 @@ html
           .alert.alert-danger #{error}
 
     .container-fluid.d-flex.h-100.p-0
-      aside.shadow.min-vh-100.py-4.px-2
+      aside.shadow.min-vh-100.py-4.px-2.position-fixed.top-0.start-0
         nav.d-flex.flex-column.h-100.flex-grow-1
           a.navbar-brand.px-3(href="/")
             img(height=50, src="/images/logo.svg", alt="Apex Finance")
@@ -31,14 +31,16 @@ html
             li.nav-item
               a.nav-link.fw-bold.text-light(href="/") Dashboard
             li.nav-item
-              a.nav-link.fw-bold.text-light(href="/buyassets") Buy Assets 
+              a.nav-link.fw-bold.text-light(href="/my-portfolio") My Portfolio
             li.nav-item
-              a.nav-link.fw-bold.text-light(href="/sellassets") Sell Assets 
+              a.nav-link.fw-bold.text-light(href="/buy-asset") Buy Asset
+            li.nav-item
+              a.nav-link.fw-bold.text-light(href="/sell-asset") Sell Asset
             li.nav-item
               form(action="/logout", method="POST")
                 button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit") Logout
 
-      main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column
+      main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column.min-vh-100(style="margin-left: 16rem;")
         block content
         footer.mt-auto.text-center.text-muted
           p &copy; 2025 Apex Finance

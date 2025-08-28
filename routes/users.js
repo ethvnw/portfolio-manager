@@ -12,7 +12,6 @@ router.get("/register", redirectIfAuthenticated, (req, res) => {
 router.post("/register", async (req, res) => {
   const { email, password, confirm_password } = req.body;
 
-  console.log(email, password, confirm_password);
   if (password !== confirm_password) {
     req.flash("error", "Passwords do not match.");
     return res.redirect("/register");
@@ -22,7 +21,6 @@ router.post("/register", async (req, res) => {
 
   try {
     await newUser.save();
-    console.log("here");
     req.flash("notice", "Registration successful, please log in.");
     res.redirect("/login");
   } catch (error) {
@@ -37,13 +35,10 @@ router.get("/login", redirectIfAuthenticated, (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
 
   const user = await User.findOne({
     where: { email, hashed_pass: md5(password) },
   });
-
-  console.log(user);
 
   if (!user) {
     req.flash("error", "Invalid email or password.");
