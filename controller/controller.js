@@ -12,7 +12,7 @@ require("dotenv").config();
 // login in user
 
 // get all user's assets
-async function getAllAssetsByUserId(userId) {
+async function getAssetsByUserId(userId) {
     try{
         await model.getUserById(userId);
         const user = req.params;
@@ -109,9 +109,16 @@ async function deleteAssetIfSold(req, res) {
     }
 }
 
-
-
-
+module.exports = {
+    getAssetsByUserId,
+    getAssetsByCategory,
+    getAssetsByTicker,
+    getAssetsByType,
+    createUser,
+    getUserByEmail,
+    changeAssetType,
+    deleteAssetIfSold
+};
 
 
 
