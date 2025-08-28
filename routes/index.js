@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const controller = require("../controller/controller");
 const { ensureAuthenticated } = require("../middleware/auth");
 
 /* GET home page. */
@@ -14,5 +15,6 @@ router.get("/buyassets", function (req, res, next) {
 router.get("/sellassets", function (req, res, next) {
   res.render("sellassets.pug", { const1: "value" });
 });
+
 
 module.exports = router;
