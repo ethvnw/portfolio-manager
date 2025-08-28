@@ -4,7 +4,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const port = 3000;
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
 app.use("/js", express.static(__dirname + "/node_modules/bootstrap/dist/js"));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
@@ -31,7 +33,7 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
- //
+// error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -43,4 +45,4 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));

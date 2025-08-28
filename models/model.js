@@ -79,7 +79,6 @@ const Asset = seq.define('Asset', {
     },
 }, {
     tableName: 'assets',
-    schema: 'portfolio_manager',
     timestamps: false,
 });
 
