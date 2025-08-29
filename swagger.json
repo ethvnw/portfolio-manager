@@ -33,7 +33,7 @@
                                     "properties": {
                                         "portfolios": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": { "$ref": "#/components/schemas/Portfolio" }
                                         }
                                     }
                                 }
@@ -65,7 +65,7 @@
                                     "properties": {
                                         "assets": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": { "$ref": "#/components/schemas/Asset" }
                                         }
                                     }
                                 }
@@ -76,10 +76,16 @@
                 }
             }
         },
-        "/assets/category/{category}": {
+        "/assets/category/{portfolioId}/{category}": {
             "get": {
                 "summary": "Get assets by category in a portfolio",
                 "parameters": [
+                    {
+                        "name": "portfolioId",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer" }
+                    },
                     {
                         "name": "category",
                         "in": "path",
@@ -97,7 +103,7 @@
                                     "properties": {
                                         "assets": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": { "$ref": "#/components/schemas/Asset" }
                                         }
                                     }
                                 }
@@ -108,10 +114,16 @@
                 }
             }
         },
-        "/assets/ticker/{ticker}": {
+        "/assets/ticker/{portfolioId}/{ticker}": {
             "get": {
                 "summary": "Get assets by ticker in a portfolio",
                 "parameters": [
+                    {
+                        "name": "portfolioId",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer" }
+                    },
                     {
                         "name": "ticker",
                         "in": "path",
@@ -129,7 +141,7 @@
                                     "properties": {
                                         "assets": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": { "$ref": "#/components/schemas/Asset" }
                                         }
                                     }
                                 }
@@ -140,10 +152,16 @@
                 }
             }
         },
-        "/assets/type/{type}": {
+        "/assets/type/{portfolioId}/{type}": {
             "get": {
                 "summary": "Get assets by type in a portfolio",
                 "parameters": [
+                    {
+                        "name": "portfolioId",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer" }
+                    },
                     {
                         "name": "type",
                         "in": "path",
@@ -161,7 +179,7 @@
                                     "properties": {
                                         "assets": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": { "$ref": "#/components/schemas/Asset" }
                                         }
                                     }
                                 }
@@ -172,15 +190,15 @@
                 }
             }
         },
-        "/assets/{ticker}/type": {
+        "/assets/{id}/type": {
             "put": {
                 "summary": "Change asset type",
                 "parameters": [
                     {
-                        "name": "ticker",
+                        "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": { "type": "integer" }
                     }
                 ],
                 "requestBody": {
@@ -202,15 +220,15 @@
                 }
             }
         },
-        "/assets/{ticker}": {
+        "/assets/{id}": {
             "delete": {
                 "summary": "Delete asset if sold",
                 "parameters": [
                     {
-                        "name": "ticker",
+                        "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": { "type": "integer" }
                     }
                 ],
                 "responses": {
@@ -233,6 +251,37 @@
                 "responses": {
                     "200": { "description": "Portfolio deleted" },
                     "404": { "description": "Portfolio not found or not empty" }
+                }
+            }
+        },
+        "/new-portfolio": {
+            "post": {
+                "summary": "Create a new portfolio",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { "type": "string" },
+                                    "description": { "type": "string" }
+                                },
+                                "required": ["name"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Portfolio created",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/Portfolio" }
+                            }
+                        }
+                    },
+                    "400": { "description": "Invalid input" }
                 }
             }
         }
