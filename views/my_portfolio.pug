@@ -1,0 +1,30 @@
+extends layout 
+
+block content
+  h1.mb-4 My Portfolio
+
+  table.table
+    thead
+      tr
+        th Name
+        th Ticker
+        th Category
+        th Type
+        th Quantity
+        th Buy Price
+        th Current Price
+        th Buy Value
+        th Current Value
+    tbody
+      each item in portfolioItems
+        tr
+          td= item.name
+          td= item.ticker
+          td(style="text-transform: capitalize;")= item.category
+          td(style="text-transform: capitalize;")= item.type
+          td= item.quantity
+          td= item.buy_price
+          td= item.current_price > 0 ? item.current_price : "N/A"
+          td= item.quantity * item.buy_price
+          td= item.current_price > 0 ? item.quantity * item.current_price : "N/A"
+

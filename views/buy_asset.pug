@@ -1,0 +1,81 @@
+extends layout 
+
+block content
+  h1.mb-4 Buy Asset
+
+  form(action="/buy-asset" method="POST")
+    .mb-3
+        label.form-label(for="assetName") Name
+        input.form-control(type="text" id="assetName" name="assetName" placeholder="Enter asset name" required)
+
+
+    .mb-3
+      label.form-label(for="assetType") Type
+      select.form-select(id="assetType" name="assetType" required)
+        option(value="" disabled selected) Select Asset Type
+        option(value="stocks") Stocks
+        option(value="bonds") Bonds
+        option(value="real-estate") Real Estate
+        option(value="cryptocurrency") Cryptocurrency
+        option(value="cash") Cash
+
+    .mb-3.d-none#ticker-container
+      label.form-label(for="assetTicker") Ticker
+
+      .d-flex.gap-2.align-items-end
+        .flex-grow-1
+          input.form-control(type="text" id="assetTicker" name="assetTicker" placeholder="Enter asset ticker" required)
+
+        button.btn.btn-secondary(type="button" id="fetch-price-btn") Fetch Current Price
+      
+      p#current-price.mt-2.text-muted Current Price:
+
+    .mb-3
+      label.form-label(for="buyPrice") Buy Price (per unit)
+      input.form-control(type="number" id="buyPrice" name="buyPrice" step="0.01" placeholder="Enter buy price" required)
+
+    .mb-3
+        label.form-label(for="quantity") Quantity
+        input.form-control(type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required)
+
+    .mb-3
+        button.float-end.btn.btn-primary(type="submit") Buy Asset
+      
+
+  script.
+    const fetchPriceBtn = document.getElementById('fetch-price-btn');
+    const currentPriceDisplay = document.getElementById('current-price');
+
+    fetchPriceBtn.addEventListener('click', () => {
+      const assetTicker = assetTickerInput.value;
+      if (assetTicker) {
+        fetch(`/asset-current-price?symbol=${assetTicker}`)
+          .then(response => response.json())
+          .then(data => {
+            currentPriceDisplay.textContent = `Current Price: $${data.price}`;
+          })
+          .catch(error => {
+            currentPriceDisplay.textContent = 'Error fetching price';
+            console.error('Error fetching asset price:', error);
+          });
+      }
+    });
+
+
+  script.
+    const assetTypeSelect = document.getElementById('assetType');
+    const tickerContainer = document.getElementById('ticker-container');
+    const assetTickerInput = document.getElementById('assetTicker');
+
+    function updateTickerVisibility() {
+      const selectedType = assetTypeSelect.value;
+      if (selectedType === 'stocks') {
+        tickerContainer.classList.remove('d-none');
+        assetTickerInput.setAttribute('required', 'required');
+      } else {
+        tickerContainer.classList.add('d-none');
+        assetTickerInput.removeAttribute('required');
+      }
+    }
+
+    assetTypeSelect.addEventListener('change', updateTickerVisibility);
