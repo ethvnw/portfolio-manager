@@ -11,8 +11,7 @@ const seq = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql",
-  }
-);
+});
 
 const User = seq.define(
   "User",
@@ -38,6 +37,36 @@ const User = seq.define(
   }
 );
 
+const Portfolio = seq.define(
+  "Portfolio",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: seq.literal("CURRENT_TIMESTAMP"),
+    },
+  },
+  {
+    tableName: "portfolio",
+    timestamps: false,
+  }
+);
+
 const Asset = seq.define(
   "Asset",
   {
@@ -46,7 +75,7 @@ const Asset = seq.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    portfolio_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -93,79 +122,97 @@ const Asset = seq.define(
   }
 );
 
-//current iteration, functionality to be changed
 
-//user can get all assets in their portfolio
-async function getAssetsByUserId(userId) {
-  return await Asset.findAll({
-    where: {
-      user_id: userId,
-    },
+
+// get all portfolios a user has
+async function getPortfoliosByUserId(userId) {
+  return await Portfolio.findAll({
+    where: { user_id: userId },
   });
 }
 
-//user can search by category
-async function getAssetsByCategory(category) {
+// get all assets in a portfolio
+async function getAssetsByPortfolioId(portfolioId) {
   return await Asset.findAll({
-    where: {
-      category: category,
-    },
-  });
-}
-//user can get assets by ticker, to get a specific asset
-async function getAssetsByTicker(ticker) {
-  return await Asset.findAll({
-    where: {
-      ticker: ticker,
-    },
-  });
-}
-//user can see if assets are ones bought, sold or kept
-async function getAssetsByType(type) {
-  return await Asset.findAll({
-    where: {
-      type: type,
-    },
+    where: { portfolio_id: portfolioId },
   });
 }
 
-//creating user
+// get assets by category in a portfolio
+async function getAssetsByCategory(portfolioId, category) {
+  return await Asset.findAll({
+    where: { portfolio_id: portfolioId, category: category },
+  });
+}
+
+// get assets by ticker in a portfolio
+async function getAssetsByTicker(portfolioId, ticker) {
+  return await Asset.findAll({
+    where: { portfolio_id: portfolioId, ticker: ticker },
+  });
+}
+// get assets by type in a portfolio
+async function getAssetsByType(portfolioId, type) {
+  return await Asset.findAll({
+    where: { portfolio_id: portfolioId, type: type },
+  });
+}
+
+// Create user
 async function createUser(email, hashed_pass) {
+  return await User.create({
+    email: email,
+    hashed_pass: hashed_pass,
+  });
   return await User.create({
     email: email,
     hashed_pass: hashed_pass,
   });
 }
 
-//getting user by email
+// get user by email
 async function getUserByEmail(email) {
   return await User.findOne({
     where: {
       email: email,
     },
   });
+
 }
 
-//changing asset type
+// change asset type
 async function changeAssetType(assetId, newType) {
-  return await Asset.update({ type: newType }, { where: { id: assetId } });
+  return await Asset.update(
+    { type: newType },
+    { where: { id: assetId } }
+  );
 }
 
-//deleting sold assets if they no longer want them on their portfolio
+// delete asset in a portfolio if sold
 async function deleteAssetIfSold(assetId) {
   const asset = await Asset.findOne({ where: { id: assetId } });
-  if (asset && asset.type === "sell") {
-    return await Asset.destroy({
-      where: { id: assetId },
-    });
+  if (asset && asset.type === 'sell') {
+    return await Asset.destroy({ where: { id: assetId } });
+  }
+  return 0; 
+}
+
+// delete portfolio if empty
+async function deletePortfolioIfEmpty(portfolioId) {
+  const assets = await getAssetsByPortfolioId(portfolioId);
+  if (!assets || assets.length === 0) {
+    return await Portfolio.destroy({ where: { id: portfolioId } });
   }
   return 0;
 }
+
 module.exports = {
   seq,
   User,
+  Portfolio,
   Asset,
-  getAssetsByUserId,
+  getPortfoliosByUserId,
+  getAssetsByPortfolioId,
   getAssetsByCategory,
   getAssetsByTicker,
   getAssetsByType,
@@ -173,4 +220,5 @@ module.exports = {
   getUserByEmail,
   changeAssetType,
   deleteAssetIfSold,
+  deletePortfolioIfEmpty
 };
