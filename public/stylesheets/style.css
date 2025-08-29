@@ -6,6 +6,12 @@
   background-color: var(--accent-color);
 }
 
+.dark-mode {
+  background-color: hsl(221, 32%, 10%);
+  color: white;
+
+}
+
 aside {
   background-color: var(--accent-color);
   width: 16rem;
