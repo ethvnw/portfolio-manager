@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1.mb-4 Sell Asset
+
+  form(action="/sell-asset" method="POST")
+    .mb-3
+      label.form-label(for="asset") Select Asset
+      select.form-select(id="asset" name="asset_id" required)
+        option(value="" disabled selected) -- Select an asset --
+        each asset in assets
+          option(value=asset.id) #{asset.name} (#{asset.ticker}) - Owned: #{asset.quantity}
+    
+    .mb-3
+        label.form-label(for="quantity") Quantity
+        input.form-control(type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required)
+    .mb-3
+        label.form-label(for="price") Selling Price (per unit)
+        input.form-control(type="number" id="price" name="price" step="0.01" placeholder="Enter selling price" required)
+    .mb-3
+        button.btn.btn-primary.float-end(type="submit") Sell Asset
