@@ -1,44 +1,14 @@
 extends layout
 
 block content
-  h1 Dashboard
+  h1.mb-4 Dashboard
 
-  .charts-container
-    h2 Portfolio Overview
-    .chart
-      h3 Asset Allocation
-      script(src="https://cdn.jsdelivr.net/npm/chart.js")
-      canvas#assetChart(style="max-width:500px; max-height:500px;") // Adjusted dimensions
-      script.
-        const ctx = document.getElementById('assetChart').getContext('2d');
-        const assetChart = new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: ['Stocks', 'Bonds', 'Real Estate', 'Cash'],
-            datasets: [{
-              label: 'Asset Allocation',
-              data: [40, 30, 20, 10], // Replace with SQL data
-              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
-            }]
-          }
-        });
+  .d-flex.gap-4.flex-wrap.align-items-start
+    .card.p-4
+      canvas#assetChart
+    .card.p-4.w-50
+      canvas#performanceChart
 
-    .chart
-      h3 Portfolio Performance
-      canvas#performanceChart(style="max-width:700px; max-height:700px;")
-      script.
-        const ctx2 = document.getElementById('performanceChart').getContext('2d');
-        const performanceChart = new Chart(ctx2, {
-          type: 'line',
-          data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // Replace with SQL data
-            datasets: [{
-              label: 'Portfolio Value',
-              data: [10000, 10500, 11000, 11500, 12000], // Replace with SQL data
-              borderColor: '#36A2EB',
-              fill: false
-            }]
-          }
-        });
+  script(src="https://cdn.jsdelivr.net/npm/chart.js")
+  script(src="/javascripts/dashboard_charts.js")
 
-  

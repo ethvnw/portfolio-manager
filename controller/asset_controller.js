@@ -1,9 +1,68 @@
 const { getAssetsByUserId, Asset } = require("../models/model");
+const controller = require("../controller/controller");
 const axios = require("axios");
+
+const portfolioValOverTime = async (req, res) => {
+  const portfolioItems = await getAssetsByUserId(req.user.id);
+  const stocks = portfolioItems.filter((item) => item.category === "stocks");
+  const portfolioValueOverTime = {};
+
+  for (const stock of stocks) {
+    const apiUrl = `${process.env.API_URL}${stock.ticker}`;
+    const response = await axios.get(apiUrl);
+    const data = response.data;
+
+    const historicalPrices = data["Time Series (Daily)"];
+
+    for (const [date, prices] of Object.entries(historicalPrices)) {
+      const price = parseFloat(prices["4. close"]);
+      const quantity = stock.quantity;
+
+      if (!portfolioValueOverTime[date]) {
+        portfolioValueOverTime[date] = 0;
+      }
+      portfolioValueOverTime[date] += price * quantity;
+    }
+  }
+
+  // Convert object to array format expected by frontend
+  const portfolioArray = Object.entries(portfolioValueOverTime)
+    .map(([date, value]) => ({
+      date,
+      value,
+    }))
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  res.json(portfolioArray);
+};
 
 const portfolio = async (req, res) => {
   const portfolioItems = await getAssetsByUserId(req.user.id);
   res.render("my_portfolio", { portfolioItems });
+};
+
+const assetAllocation = async (req, res) => {
+  const portfolioItems = await getAssetsByUserId(req.user.id);
+
+  const totalValue = portfolioItems.reduce(
+    (acc, item) =>
+      acc +
+      (item.current_price > 0 ? item.current_price : item.buy_price) *
+        item.quantity,
+    0
+  );
+
+  // Calculates the percentage allocation for each asset based on value
+  const allocation = portfolioItems.map((item) => ({
+    type: item.category,
+    percentage: (
+      (((item.current_price > 0 ? item.current_price : item.buy_price) *
+        item.quantity) /
+        totalValue) *
+      100
+    ).toFixed(2),
+  }));
+  res.json(allocation);
 };
 
 const getCurrentAssetPrice = async (symbol) => {
@@ -103,4 +162,6 @@ module.exports = {
   sellAsset,
   assetCurrentPrice,
   portfolio,
+  assetAllocation,
+  portfolioValOverTime,
 };

@@ -9,6 +9,16 @@ router.get("/", ensureAuthenticated, (req, res, next) => {
 });
 
 router.get("/my-portfolio", ensureAuthenticated, assetController.portfolio);
+router.get(
+  "/asset-allocation",
+  ensureAuthenticated,
+  assetController.assetAllocation
+);
+router.get(
+  "/portfolio-value-over-time",
+  ensureAuthenticated,
+  assetController.portfolioValOverTime
+);
 
 router.get(
   "/asset-current-price",
