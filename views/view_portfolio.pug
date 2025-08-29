@@ -1,7 +1,11 @@
 extends layout 
 
 block content
-  h1.mb-4 My Portfolio
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 #{portfolio.name} Details
+    .d-flex.gap-2
+      a.btn.btn-primary(href=`/portfolios/${portfolio.id}/buy-asset`) Buy Asset
+      a.btn.btn-secondary(href=`/portfolios/${portfolio.id}/sell-asset`) Sell Asset
 
   table.table
     thead

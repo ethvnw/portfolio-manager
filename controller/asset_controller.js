@@ -1,19 +1,37 @@
-const { getAssetsByUserId, Asset } = require("../models/model");
+const {
+  getAssetsByPortfolioId,
+  getPortfoliosByUserId,
+  Asset,
+  Portfolio,
+} = require("../models/model");
 const axios = require("axios");
+const yahooFinance = require("yahoo-finance2").default;
 
 const portfolio = async (req, res) => {
-  const portfolioItems = await getAssetsByUserId(req.user.id);
-  res.render("my_portfolio", { portfolioItems });
+  const portfolios = await getPortfoliosByUserId(req.user.id);
+  res.render("portfolios", { portfolios });
 };
 
+const viewPortfolio = async (req, res) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findOne({
+    where: { id, user_id: req.user.id },
+  });
+  if (!portfolio) {
+    req.flash("error", "Portfolio not found.");
+    return res.redirect("/portfolios");
+  }
+  const portfolioItems = await getAssetsByPortfolioId(id);
+  res.render("view_portfolio", { portfolio, portfolioItems });
+};
+
+
+
+
 const getCurrentAssetPrice = async (symbol) => {
-  const apiUrl = `${process.env.API_URL}${symbol}`;
   try {
-    const response = await axios.get(apiUrl);
-    const data = response.data;
-    return data["Time Series (Daily)"][
-      Object.keys(data["Time Series (Daily)"])[0]
-    ]["4. close"];
+    const result = await yahooFinance.quote(symbol);
+    return result.regularMarketPrice;
   } catch (error) {
     console.error("Error fetching asset current price:", error);
     throw error;
@@ -31,11 +49,24 @@ const assetCurrentPrice = async (req, res) => {
   }
 };
 
-const renderBuyAsset = (req, res) => {
-  res.render("buy_asset");
+const renderBuyAsset = async (req, res) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findOne({
+    where: { id, user_id: req.user.id },
+  });
+  res.render("buy_asset", { portfolio });
 };
 
 const buyAsset = async (req, res) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findOne({
+    where: { id, user_id: req.user.id },
+  });
+  if (!portfolio) {
+    req.flash("error", "Portfolio not found.");
+    return res.redirect("/portfolios");
+  }
+
   const { assetName, assetTicker, assetType, quantity, buyPrice } = req.body;
   try {
     const newAsset = await Asset.create({
@@ -48,38 +79,53 @@ const buyAsset = async (req, res) => {
       current_price: assetTicker ? await getCurrentAssetPrice(assetTicker) : 0,
       currency: "USD",
       type: "buy",
+      portfolio_id: portfolio.id,
     });
     req.flash("notice", "Asset purchased successfully!");
-    res.redirect("/my-portfolio");
+    res.redirect(`/portfolios/${portfolio.id}`);
   } catch (error) {
     console.error("Error purchasing asset:", error);
     req.flash("error", "Error purchasing asset. Please try again.");
-    res.redirect("/buy-asset");
+    res.redirect(`/portfolio/${portfolio.id}/buy-asset`);
   }
 };
 
 const renderSellAsset = async (req, res) => {
-  const assets = await Asset.findAll({ where: { user_id: req.user.id } });
-  res.render("sell_asset", { assets });
+  const portfolio = await Portfolio.findOne({
+    where: { id: req.params.id, user_id: req.user.id },
+  });
+  const assets = await getAssetsByPortfolioId(portfolio.id);
+  res.render("sell_asset", { portfolio, assets });
 };
 
 const sellAsset = async (req, res) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findOne({
+    where: { id, user_id: req.user.id },
+  });
+  if (!portfolio) {
+    req.flash("error", "Portfolio not found.");
+    return res.redirect("/portfolios");
+  }
+
   const { asset_id, quantity, price } = req.body;
 
   try {
     const asset = await Asset.findOne({
-      where: { id: asset_id, user_id: req.user.id },
+      where: { id: asset_id },
     });
 
     if (!asset) {
       req.flash("error", "Asset not found.");
-      return res.redirect("/my-portfolio");
+      return res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
     }
 
+    console.log("asset quantity:", asset.quantity);
+    console.log("quantity", quantity);
     // Check if the user is trying to sell more than they own
-    if (quantity > asset.quantity) {
+    if (parseFloat(quantity) > asset.quantity) {
       req.flash("error", "Insufficient asset quantity.");
-      return res.redirect("/sell-asset");
+      return res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
     }
 
     await Asset.update(
@@ -88,11 +134,11 @@ const sellAsset = async (req, res) => {
     );
 
     req.flash("notice", "Asset sold successfully!");
-    res.redirect("/my-portfolio");
+    res.redirect(`/portfolios/${portfolio.id}`);
   } catch (error) {
     console.error("Error selling asset:", error);
     req.flash("error", "Error selling asset. Please try again.");
-    res.redirect("/sell-asset");
+    res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
   }
 };
 
@@ -103,4 +149,5 @@ module.exports = {
   sellAsset,
   assetCurrentPrice,
   portfolio,
+  viewPortfolio,
 };
