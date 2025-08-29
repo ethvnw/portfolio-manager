@@ -1,13 +1,12 @@
 extends layout 
 
 block content
-  h1.mb-4 Buy Asset
+  h1.mb-4 Buy Asset for #{portfolio.name}
 
-  form(action="/buy-asset" method="POST")
+  form(action=`/portfolios/${portfolio.id}/buy-asset` method="POST")
     .mb-3
         label.form-label(for="assetName") Name
         input.form-control(type="text" id="assetName" name="assetName" placeholder="Enter asset name" required)
-
 
     .mb-3
       label.form-label(for="assetType") Type

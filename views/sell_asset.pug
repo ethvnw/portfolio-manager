@@ -1,9 +1,9 @@
 extends layout
 
 block content
-  h1.mb-4 Sell Asset
+  h1.mb-4 Sell Asset from #{portfolio.name}
 
-  form(action="/sell-asset" method="POST")
+  form(action=`/portfolios/${portfolio.id}/sell-asset` method="POST")
     .mb-3
       label.form-label(for="asset") Select Asset
       select.form-select(id="asset" name="asset_id" required)

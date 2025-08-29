@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Portfolios
+    a.btn.btn-primary(href="/new-portfolio") Create New Portfolio
+
+
+  if (portfolios.length === 0)
+    p No portfolios have been created.
+  else
+    .row.row-cols-3.g-4
+      each portfolio in portfolios
+        .col
+          .card
+            .card-body
+              h2= portfolio.name
+              p= portfolio.description
+              a.btn.btn-secondary(href=`/portfolios/${portfolio.id}`) View Details

@@ -8,17 +8,44 @@ router.get("/", ensureAuthenticated, (req, res, next) => {
   res.render("index");
 });
 
-router.get("/my-portfolio", ensureAuthenticated, assetController.portfolio);
+router.get("/portfolios", ensureAuthenticated, assetController.portfolio);
+router.get("/new-portfolio", ensureAuthenticated, assetController.newPortfolio);
+router.post(
+  "/new-portfolio",
+  ensureAuthenticated,
+  assetController.createNewPortfolio
+);
+router.get(
+  "/portfolios/:id",
+  ensureAuthenticated,
+  assetController.viewPortfolio
+);
 
 router.get(
   "/asset-current-price",
   ensureAuthenticated,
   assetController.assetCurrentPrice
 );
-router.get("/buy-asset", ensureAuthenticated, assetController.renderBuyAsset);
-router.post("/buy-asset", ensureAuthenticated, assetController.buyAsset);
-router.get("/sell-asset", ensureAuthenticated, assetController.renderSellAsset);
-router.post("/sell-asset", ensureAuthenticated, assetController.sellAsset);
+router.get(
+  "/portfolios/:id/buy-asset",
+  ensureAuthenticated,
+  assetController.renderBuyAsset
+);
+router.post(
+  "/portfolios/:id/buy-asset",
+  ensureAuthenticated,
+  assetController.buyAsset
+);
+router.get(
+  "/portfolios/:id/sell-asset",
+  ensureAuthenticated,
+  assetController.renderSellAsset
+);
+router.post(
+  "/portfolios/:id/sell-asset",
+  ensureAuthenticated,
+  assetController.sellAsset
+);
 
 // restful API routes
 // router.get("/users/:email", controller.getUserByEmail);
