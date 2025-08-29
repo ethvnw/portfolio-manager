@@ -25,26 +25,8 @@ const viewPortfolio = async (req, res) => {
   res.render("view_portfolio", { portfolio, portfolioItems });
 };
 
-const newPortfolio = (req, res) => {
-  res.render("new_portfolio");
-};
 
-const createNewPortfolio = async (req, res) => {
-  const { name, description } = req.body;
-  try {
-    const newPortfolio = await Portfolio.create({
-      user_id: req.user.id,
-      name,
-      description,
-    });
-    req.flash("notice", "Portfolio created successfully!");
-    res.redirect("/portfolios");
-  } catch (error) {
-    console.error("Error creating portfolio:", error);
-    req.flash("error", "Error creating portfolio. Please try again.");
-    res.redirect("/new-portfolio");
-  }
-};
+
 
 const getCurrentAssetPrice = async (symbol) => {
   try {
@@ -167,7 +149,5 @@ module.exports = {
   sellAsset,
   assetCurrentPrice,
   portfolio,
-  newPortfolio,
-  createNewPortfolio,
   viewPortfolio,
 };

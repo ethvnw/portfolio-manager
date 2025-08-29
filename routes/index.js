@@ -9,11 +9,11 @@ router.get("/", ensureAuthenticated, (req, res, next) => {
 });
 
 router.get("/portfolios", ensureAuthenticated, assetController.portfolio);
-router.get("/new-portfolio", ensureAuthenticated, assetController.newPortfolio);
+router.get("/new-portfolio", ensureAuthenticated, controller.newPortfolio);
 router.post(
   "/new-portfolio",
   ensureAuthenticated,
-  assetController.createNewPortfolio
+  controller.createNewPortfolio
 );
 router.get(
   "/portfolios/:id",

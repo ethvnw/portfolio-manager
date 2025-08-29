@@ -208,6 +208,16 @@ async function deletePortfolioIfEmpty(portfolioId) {
   return 0;
 }
 
+
+//create new portfolio
+async function createNewPortfolio(userId, name, description) {
+  return await Portfolio.create({
+    user_id: userId,
+    name,
+    description,
+  });
+}
+
 module.exports = {
   seq,
   User,
@@ -222,5 +232,6 @@ module.exports = {
   getUserByEmail,
   changeAssetType,
   deleteAssetIfSold,
-  deletePortfolioIfEmpty
+  deletePortfolioIfEmpty,
+  createNewPortfolio
 };

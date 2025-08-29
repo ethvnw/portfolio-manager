@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 const model = require('../models/model.js');
+
 const port = 3000;
 const md5 = require('js-md5');
 require("dotenv").config();
@@ -11,6 +12,27 @@ require("dotenv").config();
 
 // login in user
 
+
+//create new portfolio
+const newPortfolio = (req, res) => {
+  res.render("new_portfolio");
+};
+const createNewPortfolio = async (req, res) => {
+  const { name, description } = req.body;
+  try {
+    const newPortfolio = await model.Portfolio.create({
+      user_id: req.user.id,
+      name,
+      description,
+    });
+    req.flash("notice", "Portfolio created successfully!");
+    res.redirect("/portfolios");
+  } catch (error) {
+    console.error("Error creating portfolio:", error);
+    req.flash("error", "Error creating portfolio. Please try again.");
+    res.redirect("/new-portfolio");
+  }
+};
 
 //get all user's portfolio
 async function getPortfoliosByUserId(req, res) {
@@ -147,6 +169,8 @@ module.exports = {
     getAssetsByType,
     changeAssetType,
     deleteAssetIfSold,
+    createNewPortfolio,
+    newPortfolio,
     deletePortfolioIfEmpty
 };
 
