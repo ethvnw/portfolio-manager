@@ -141,14 +141,20 @@ async function getAssetsByPortfolioId(portfolioId) {
 // get assets by category in a portfolio
 async function getAssetsByCategory(portfolioId, category) {
   return await Asset.findAll({
-    where: { portfolio_id: portfolioId, category: category },
+    where: { 
+      portfolio_id: portfolioId, 
+      category: category 
+    },
   });
 }
 
 // get assets by ticker in a portfolio
 async function getAssetsByTicker(portfolioId, ticker) {
   return await Asset.findAll({
-    where: { portfolio_id: portfolioId, ticker: ticker },
+    where: { 
+      portfolio_id: portfolioId, 
+      ticker: ticker 
+    },
   });
 }
 // get assets by type in a portfolio
@@ -160,10 +166,6 @@ async function getAssetsByType(portfolioId, type) {
 
 // Create user
 async function createUser(email, hashed_pass) {
-  return await User.create({
-    email: email,
-    hashed_pass: hashed_pass,
-  });
   return await User.create({
     email: email,
     hashed_pass: hashed_pass,

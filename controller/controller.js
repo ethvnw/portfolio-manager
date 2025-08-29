@@ -11,74 +11,90 @@ require("dotenv").config();
 
 // login in user
 
-// get all user's assets
-async function getAssetsByUserId(userId) {
-    try{
-        await model.getUserById(userId);
-        const user = req.params;
-        const assets = await model.getAssetsByUserId(userId);
-        if (assets.length > 0) {
-            res.status(200).json({ message: `${user.email}'s assets found` });
+
+//get all user's portfolio
+async function getPortfoliosByUserId(req, res) {
+    try {
+        const userId = req.params.userId;
+        const portfolios = await model.getUserPortfolios(userId);
+        if (portfolios.length > 0) {
+            res.status(200).json({ portfolios });
         } else {
-            res.status(404).json({ message: `${user.email} has no assets` });
+            res.status(404).json({ message: `No portfolios found for user ${userId}` });
         }
     } catch (error) {
-        res.status(500).json({ error: error.message } );
-        console.error("error fetching assets:", error);
+        res.status(500).json({ error: error.message });
+        console.error("error fetching user portfolios:", error);
     }
 }
 
-// get user's assets by category
-async function getAssetsByCategory(req, res) {
-    try{
-
-        const category = req.params.category;
-        await model.getAssetsByCategory(category);
-        const assets = await model.getAssetsByCategory(category);
+// get all assets in a portfolio
+async function getAssetsByPortfolioId(req, res) {
+    try {
+        const portfolioId = req.params.portfolioId;
+        const assets = await model.getAssetsByPortfolioId(portfolioId);
         if (assets.length > 0) {
-            res.status(200).json({ message: `assets in category ${category} found` });
+            res.status(200).json({ assets });
         } else {
-            res.status(404).json({ message: `no assets found in category ${category}` });
+            res.status(404).json({ message: `No assets found for portfolio ${portfolioId}` });
         }
-    }catch(error){  
-        res.status(500).json({ error: error.message } );
+    } catch (error) {
+        res.status(500).json({ error: error.message });
         console.error("error fetching assets:", error);
     }
 }
 
+//get assets by category in a portfolio
+async function getAssetsByCategory(req, res) {
+    try {
+        const portfolioId = req.params.portfolioId;
+        const category = req.params.category;
+        const assets = await model.getAssetsByCategory(portfolioId, category);
+        if (assets.length > 0) {
+            res.status(200).json({ assets });
+        } else {
+            res.status(404).json({ message: `No assets found in category ${category} for portfolio ${portfolioId}` });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.error("error fetching assets:", error);
+    }
+}
 
-// get user's assets by ticker
+// get assets by ticker in a portfolio
 async function getAssetsByTicker(req, res) {
     try {
+        const portfolioId = req.params.portfolioId;
         const ticker = req.params.ticker;
-        await model.getAssetsByTicker(ticker);
-        const assets = await model.getAssetsByTicker(ticker);
+        const assets = await model.getAssetsByTicker(portfolioId, ticker);
         if (assets.length > 0) {
-            res.status(200).json({ message: `assets with ticker ${ticker} found` });
+            res.status(200).json({ assets });
         } else {
-            res.status(404).json({ message: `no assets found with ticker ${ticker}` });
+            res.status(404).json({ message: `No assets found with ticker ${ticker} for portfolio ${portfolioId}` });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.error("error fetching assets:", error);
     }
 }
-// get user's assets by type
+
+// get assets by type in a portfolio
 async function getAssetsByType(req, res) {
     try {
+        const portfolioId = req.params.portfolioId;
         const type = req.params.type;
-        await model.getAssetsByType(type);
-        const assets = await model.getAssetsByType(type);
+        const assets = await model.getAssetsByType(portfolioId, type);
         if (assets.length > 0) {
-            res.status(200).json({ message: `assets of type ${type} found` });
+            res.status(200).json({ assets });
         } else {
-            res.status(404).json({ message: `no assets found of type ${type}` });
+            res.status(404).json({ message: `No assets found of type ${type} for portfolio ${portfolioId}` });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.error("error fetching assets:", error);
     }
 }
+
 // change asset type
 async function changeAssetType(req, res) {
     try {
@@ -92,32 +108,46 @@ async function changeAssetType(req, res) {
     }
 }
 
-// delete asset if sold
+// delete asset in a portfolio if sold
 async function deleteAssetIfSold(req, res) {
     try {
         const assetId = req.params.id;
-        const asset = await model.getAssetById(assetId);
-        if (asset && asset.status === 'sold') {
-            await model.deleteAsset(assetId);
+        const result = await model.deleteAssetIfSold(assetId);
+        if (result) {
             res.status(200).json({ message: `Asset with ID ${assetId} deleted` });
         } else {
-            res.status(404).json({ message: `Asset with ID ${assetId} not found or not sold` });
+            res.status(404).json({ message: `Asset with ID ${assetId} not found or not marked as sold` });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.error("error deleting asset:", error);
     }
 }
+//delete portfolio if empty
+async function deletePortfolioIfEmpty(req, res) {
+    try {
+        const portfolioId = req.params.id;
+        const result = await model.deletePortfolioIfEmpty(portfolioId);
+        if (result) {
+            res.status(200).json({ message: `Portfolio ${portfolioId} deleted` });
+        } else {
+            res.status(404).json({ message: `Portfolio ${portfolioId} not found or not empty` });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.error("error deleting portfolio:", error);
+    }
+}
 
 module.exports = {
-    getAssetsByUserId,
+    getPortfoliosByUserId,
+    getAssetsByPortfolioId,
     getAssetsByCategory,
     getAssetsByTicker,
     getAssetsByType,
-    // createUser,
-    // getUserByEmail,
     changeAssetType,
-    deleteAssetIfSold
+    deleteAssetIfSold,
+    deletePortfolioIfEmpty
 };
 
 
