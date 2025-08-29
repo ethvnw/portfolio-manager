@@ -13,6 +13,8 @@ block content
         th Quantity
         th Buy Price
         th Current Price
+        th Buy Value
+        th Current Value
     tbody
       each item in portfolioItems
         tr
@@ -22,4 +24,7 @@ block content
           td(style="text-transform: capitalize;")= item.type
           td= item.quantity
           td= item.buy_price
-          td= item.current_price
+          td= item.current_price > 0 ? item.current_price : "N/A"
+          td= item.quantity * item.buy_price
+          td= item.current_price > 0 ? item.quantity * item.current_price : "N/A"
+
