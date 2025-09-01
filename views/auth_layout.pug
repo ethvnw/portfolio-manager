@@ -1,4 +1,4 @@
-html
+html(lang="en" data-bs-theme="light")
   head
     title= title
     link(rel="stylesheet", href="/css/bootstrap.min.css")
@@ -19,12 +19,5 @@ html
         footer.mt-auto.text-center.text-muted
           p &copy; 2025 Apex Finance
 
-    script.
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(alert => {
-        setTimeout(() => {
-          alert.classList.add('fade');
-          alert.classList.remove('show');
-          setTimeout(() => alert.remove(), 500);
-        }, 4000);
-      });
+  script(src="/javascripts/dark_mode.js")
+  script(src="/javascripts/alert.js")

@@ -1,10 +1,11 @@
 doctype html
-html
+html(lang="en" data-bs-theme="light")
   head
     title= title
     link(rel="stylesheet", href="/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css")
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="js/bootstrap.min.js")
+    script(src="/js/bootstrap.min.js")
 
 
   body
@@ -31,48 +32,28 @@ html
 
           ul.nav.flex-column.fw-semibold.gap-2.mt-3.flex-grow-1
             li.nav-item
-              a.nav-link.fw-bold.text-light(href="/") Dashboard
+              a.nav-link.fw-bold.text-light(href="/")
+                i.bi.bi-house-fill.text-light.fst-normal &nbsp; Dashboard
             li.nav-item
-              a.nav-link.fw-bold.text-light(href="/portfolios") Portfolios
+              a.nav-link.fw-bold.text-light(href="/portfolios")
+                i.bi.bi-file-earmark-text.text-light.fst-normal &nbsp; Portfolios
             //- li.nav-item
             //-   a.nav-link.fw-bold.text-light(href="/buy-asset") Buy Asset
             //- li.nav-item
             //-   a.nav-link.fw-bold.text-light(href="/sell-asset") Sell Asset
             li.nav-item
               form(action="/logout", method="POST")
-                button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit") Logout
+                button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit")
+                  i.bi.bi-box-arrow-right.text-danger.fst-normal &nbsp; Logout
 
             li.nav-item
-              a.nav-link.fw-bold.text-light(href="#" onclick="toggleDarkMode()") Toggle Dark Mode
+              a.nav-link.fw-bold.text-light(href="#" onclick="toggleDarkMode()")
+                i.bi.bi-moon-stars.text-light.fst-normal &nbsp; Toggle Dark Mode
       main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column.min-vh-100(style="margin-left: 16rem;")
         block content
         footer.mt-auto.text-center.text-muted
           p &copy; 2025 Apex Finance
-
-    script.
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(alert => {
-        setTimeout(() => {
-          alert.classList.add('fade');
-          alert.classList.remove('show');
-          setTimeout(() => alert.remove(), 500);
-        }, 4000);
-      });
-
-    script.
-      function toggleDarkMode() {
-        // change html data-bs-theme
-        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-bs-theme', newTheme);
-        //using local storage to keep it persistent across each page
-        localStorage.setItem('theme', newTheme);
-      }
-      (function() {
-        if(localStorage.getItem('theme') === 'dark') {
-          document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-      })();
+      
 
     //google Translate Scripts
     script.
@@ -82,8 +63,10 @@ html
           'google_translate_element'
         );
       }
-    
-    script(src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript")
+
+  script(src="/javascripts/dark_mode.js")
+  script(src="/javascripts/alert.js")
+  script(src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript")
 
 
 

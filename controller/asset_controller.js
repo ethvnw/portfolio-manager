@@ -64,7 +64,9 @@ const getAssetPrice = async (symbol, date = null) => {
         period1: date,
         period2: nextDay,
       });
-      return parseFloat(result.quotes[0].close.toFixed(2));
+      if (result.quotes.length > 0) {
+        return parseFloat(result.quotes[0].close.toFixed(2));
+      }
     } catch (error) {
       console.error("Error fetching asset historical price:", error);
       throw error;
