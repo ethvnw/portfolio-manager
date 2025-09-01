@@ -19,36 +19,34 @@ html(lang="en" data-bs-theme="light")
           .alert.alert-danger #{error}
 
     .container-fluid.d-flex.h-100.p-0
-      aside.shadow.min-vh-100.py-4.px-2.position-fixed.top-0.start-0
-        nav.d-flex.flex-column.h-100.flex-grow-1
+      aside.shadow.py-4.px-2.position-fixed.top-0.start-0.d-flex.flex-column
+        // Header section
+        .flex-shrink-0
           a.navbar-brand.px-3(href="/")
             img(height=50, src="/images/logo.svg", alt="Apex Finance")
 
           hr.text-light
-
           p.mb-0.text-light.px-3.fw-semibold Hi, #{email}
-
           hr.text-light
 
-          ul.nav.flex-column.fw-semibold.gap-2.mt-3.flex-grow-1
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="/")
-                i.bi.bi-house-fill.text-light.fst-normal &nbsp; Dashboard
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="/portfolios")
-                i.bi.bi-file-earmark-text.text-light.fst-normal &nbsp; Portfolios
-            //- li.nav-item
-            //-   a.nav-link.fw-bold.text-light(href="/buy-asset") Buy Asset
-            //- li.nav-item
-            //-   a.nav-link.fw-bold.text-light(href="/sell-asset") Sell Asset
-            li.nav-item
-              form(action="/logout", method="POST")
-                button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit")
-                  i.bi.bi-box-arrow-right.text-danger.fst-normal &nbsp; Logout
+        // Navigation section
+        ul.nav.flex-column.fw-semibold.gap-2.mt-3.flex-grow-1
+          li.nav-item
+            a.nav-link.fw-bold.text-light(href="/")
+              i.bi.bi-house.text-light.fst-normal &nbsp; Dashboard
+          li.nav-item
+            a.nav-link.fw-bold.text-light(href="/portfolios")
+              i.bi.bi-file-earmark-text.text-light.fst-normal &nbsp; Portfolios
+          li.nav-item
+            form(action="/logout", method="POST")
+              button.btn.btn-link.nav-link.fw-bold.text-danger.w-100.text-start(type="submit")
+                i.bi.bi-box-arrow-right.text-danger.fst-normal &nbsp; Logout
 
-            li.nav-item
-              a.nav-link.fw-bold.text-light(href="#" onclick="toggleDarkMode()")
-                i.bi.bi-moon-stars.text-light.fst-normal &nbsp; Toggle Dark Mode
+        // Dark mode toggle
+        .flex-shrink-0
+          a.nav-link.fw-bold.text-light.px-3.py-2(href="#" onclick="toggleDarkMode()")
+            i.bi.bi-moon-stars.text-light.fst-normal &nbsp; Toggle Dark Mode
+
       main.flex-grow-1.overflow-auto.p-4.d-flex.flex-column.min-vh-100(style="margin-left: 16rem;")
         block content
         footer.mt-auto.text-center.text-muted

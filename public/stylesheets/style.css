@@ -19,6 +19,11 @@ aside {
   background-color: var(--navbar-bg) !important;
   color: var(--navbar-text);
   width: 16rem;
+  height: 100vh !important;
+}
+
+aside nav {
+  height: 100% !important;
 }
 
 aside a,
