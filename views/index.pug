@@ -8,158 +8,168 @@ block content
     script.
       const USER_ID = null;
 
-  h1 Dashboard
+  h1.mb-4 Dashboard
 
-  .charts-container
-    h2 Portfolio Overview
+  .card.mb-4
+    .card-header
+      p.mb-0.fw-semibold.fs-5 Select Portfolio to View
+    .card-body
+      select.form-select#portfolioDropdown
+        option(value="" disabled) Select a portfolio
 
-    .chart
-      h3 Select Portfolio
-      select#portfolioDropdown
-        option(value="") Select a portfolio
+  .row.row-cols-2
+    .col
+      .card
+        .card-header
+          p.mb-0.fw-semibold.fs-5 Asset Allocation 
+        .card-body
+          canvas#pieChart(style="max-height:285px;")
 
-      h3 Asset Allocation
-      canvas#pieChart(style="max-width:500px; max-height:500px;")
-      h3 Asset Prices
-      canvas#lineChart(style="max-width:600px; max-height:400px;")
-      script.
-        let pieChartInstance;
-        let lineChartInstance;
+    .col
+      .card
+        .card-header
+          p.mb-0.fw-semibold.fs-5 Asset Prices
+        .card-body
+          canvas#lineChart
 
-        fetch(`/portfolio/user/${USER_ID}`)
-          .then(res => res.json())
-          .then(data => {
-            if (!data.portfolios || !Array.isArray(data.portfolios)) {
-              alert('No portfolios found or server error!');
-              return;
-            }
-            const dropdown = document.getElementById('portfolioDropdown');
-            dropdown.length = 1;
-            data.portfolios.forEach(portfolio => {
-              const option = document.createElement('option');
-              option.value = portfolio.id;
-              option.textContent = portfolio.name;
-              dropdown.appendChild(option);
-            });
-            //first portfolio selection
-            if (data.portfolios.length) {
-              updatePieChart(data.portfolios[0].id);
-              updateLineChart(data.portfolios[0].id);
-              dropdown.value = data.portfolios[0].id;
-            }
-          })
-          .catch(err => {
-            alert('Error fetching portfolios');
-            console.error(err);
+  script.
+    let pieChartInstance;
+    let lineChartInstance;
+
+    fetch(`/portfolio/user/${USER_ID}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.portfolios || !Array.isArray(data.portfolios)) {
+          alert('No portfolios found or server error!');
+          return;
+        }
+        const dropdown = document.getElementById('portfolioDropdown');
+        dropdown.length = 1;
+        data.portfolios.forEach(portfolio => {
+          const option = document.createElement('option');
+          option.value = portfolio.id;
+          option.textContent = portfolio.name;
+          dropdown.appendChild(option);
+        });
+        //first portfolio selection
+        if (data.portfolios.length) {
+          updatePieChart(data.portfolios[0].id);
+          updateLineChart(data.portfolios[0].id);
+          dropdown.value = data.portfolios[0].id;
+        }
+      })
+      .catch(err => {
+        alert('Error fetching portfolios');
+        console.error(err);
+      });
+
+    //dropdown changes
+    document.getElementById('portfolioDropdown').addEventListener('change', function() {
+      if (this.value) {
+        updatePieChart(this.value);
+        updateLineChart(this.value);
+      }
+    });
+
+    //fetch asset data and update the pie chart
+    function updatePieChart(portfolioId) {
+      fetch(`/assets/portfolio/${portfolioId}`)
+        .then(res => res.json())
+        .then(data => {
+          // Group by category and sum quantities
+          const categoryMap = {};
+          data.assets.forEach(asset => {
+            let cat = asset.category ? asset.category.trim().toLowerCase() : 'uncategorized';
+            const displayNames = {
+              stocks: 'Stocks',
+              bonds: 'Bonds',
+              shares: 'Shares',
+              crypto: 'Crypto',
+              cash: 'Cash',
+              etf: 'ETF'
+            };
+            cat = displayNames[cat] || asset.category || 'Uncategorized';
+            categoryMap[cat] = Number(categoryMap[cat] || 0) + Number(asset.quantity || 0);
           });
+          const labels = Object.keys(categoryMap);
+          const values = Object.values(categoryMap);
 
-        //dropdown changes
-        document.getElementById('portfolioDropdown').addEventListener('change', function() {
-          if (this.value) {
-            updatePieChart(this.value);
-            updateLineChart(this.value);
+          console.log('Category Map:', categoryMap);
+          console.log('Labels:', labels);
+          console.log('Values:', values);
+
+          if (pieChartInstance) {
+            pieChartInstance.data.labels = labels;
+            pieChartInstance.data.datasets[0].data = values;
+            pieChartInstance.update();
+          } else {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            pieChartInstance = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Asset Allocation by Category',
+                  data: values,
+                  backgroundColor: [
+                    '#A6A6A8', '#C3F73A', '#47a023ff', '#3a3d5cff', '#5e646bff', '#036317'
+                  ]
+                }]
+              }
+            });
           }
         });
+    }
 
-        //fetch asset data and update the pie chart
-        function updatePieChart(portfolioId) {
-          fetch(`/assets/portfolio/${portfolioId}`)
-            .then(res => res.json())
-            .then(data => {
-              // Group by category and sum quantities
-              const categoryMap = {};
-              data.assets.forEach(asset => {
-                let cat = asset.category ? asset.category.trim().toLowerCase() : 'uncategorized';
-                const displayNames = {
-                  stocks: 'Stocks',
-                  bonds: 'Bonds',
-                  shares: 'Shares',
-                  crypto: 'Crypto',
-                  cash: 'Cash',
-                  etf: 'ETF'
-                };
-                cat = displayNames[cat] || asset.category || 'Uncategorized';
-                categoryMap[cat] = Number(categoryMap[cat] || 0) + Number(asset.quantity || 0);
-              });
-              const labels = Object.keys(categoryMap);
-              const values = Object.values(categoryMap);
+    //fetch line chart
+    function updateLineChart(portfolioId) {
+      fetch(`/assets/portfolio/${portfolioId}`)
+        .then(res => res.json())
+        .then(data => {
+          const labels = data.assets.map(asset => asset.ticker || asset.name);
+          const purchased = data.assets.map(asset => asset.buy_price || 0);
+          const current = data.assets.map(asset => asset.current_price || 0);
 
-              console.log('Category Map:', categoryMap);
-              console.log('Labels:', labels);
-              console.log('Values:', values);
-
-              if (pieChartInstance) {
-                pieChartInstance.data.labels = labels;
-                pieChartInstance.data.datasets[0].data = values;
-                pieChartInstance.update();
-              } else {
-                const ctx = document.getElementById('pieChart').getContext('2d');
-                pieChartInstance = new Chart(ctx, {
-                  type: 'pie',
-                  data: {
-                    labels: labels,
-                    datasets: [{
-                      label: 'Asset Allocation by Category',
-                      data: values,
-                      backgroundColor: [
-                        '#A6A6A8', '#C3F73A', '#47a023ff', '#3a3d5cff', '#5e646bff', '#036317'
-                      ]
-                    }]
-                  }
-                });
-              }
-            });
-        }
-
-        //fetch line chart
-        function updateLineChart(portfolioId) {
-          fetch(`/assets/portfolio/${portfolioId}`)
-            .then(res => res.json())
-            .then(data => {
-              const labels = data.assets.map(asset => asset.ticker || asset.name);
-              const purchased = data.assets.map(asset => asset.buy_price || 0);
-              const current = data.assets.map(asset => asset.current_price || 0);
-
-              if (lineChartInstance) {
-                lineChartInstance.data.labels = labels;
-                lineChartInstance.data.datasets[0].data = purchased;
-                lineChartInstance.data.datasets[1].data = current;
-                lineChartInstance.update();
-              } else {
-                const ctx = document.getElementById('lineChart').getContext('2d');
-                lineChartInstance = new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                    labels: labels,
-                    datasets: [
-                      {
-                        label: 'Purchased Price',
-                        data: purchased,
-                        borderColor: '#47a023ff',
-                        backgroundColor: 'rgba(180, 221, 197, 0.32)',
-                        fill: false,
-                        tension: 0.1
-                      },
-                      {
-                        label: 'Current Price',
-                        data: current,
-                        borderColor: '#5e646bff',
-                        backgroundColor: 'rgba(173, 168, 169, 0.2)',
-                        fill: false,
-                        tension: 0.1
-                      }
-                    ]
+          if (lineChartInstance) {
+            lineChartInstance.data.labels = labels;
+            lineChartInstance.data.datasets[0].data = purchased;
+            lineChartInstance.data.datasets[1].data = current;
+            lineChartInstance.update();
+          } else {
+            const ctx = document.getElementById('lineChart').getContext('2d');
+            lineChartInstance = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: 'Purchased Price',
+                    data: purchased,
+                    borderColor: '#47a023ff',
+                    backgroundColor: 'rgba(180, 221, 197, 0.32)',
+                    fill: false,
+                    tension: 0.1
                   },
-                  options: {
-                    responsive: true,
-                    plugins: {
-                      legend: { display: true }
-                    }
+                  {
+                    label: 'Current Price',
+                    data: current,
+                    borderColor: '#5e646bff',
+                    backgroundColor: 'rgba(173, 168, 169, 0.2)',
+                    fill: false,
+                    tension: 0.1
                   }
-                });
+                ]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: { display: true }
+                }
               }
             });
-        }
+          }
+        });
+    }
 
   script(src="https://cdn.jsdelivr.net/npm/chart.js")
 
