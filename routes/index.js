@@ -5,7 +5,9 @@ const assetController = require("../controller/asset_controller");
 const { ensureAuthenticated } = require("../middleware/auth");
 
 router.get("/", ensureAuthenticated, (req, res, next) => {
-  res.render("index");
+  res.render("index", {
+    user: req.user, 
+  });
 });
 
 router.get("/portfolios", ensureAuthenticated, assetController.portfolio);
@@ -49,7 +51,7 @@ router.post(
 
 // restful API routes
 // router.get("/users/:email", controller.getUserByEmail);
-router.get("/portfolio/user/:userId", controller.getPortfoliosByUserId);
+router.get('/portfolio/user/:userId', ensureAuthenticated, controller.getPortfoliosByUserId);
 router.get("/assets/portfolio/:portfolioId", controller.getAssetsByPortfolioId);
 router.get("/assets/category/:category", controller.getAssetsByCategory);
 router.get("/assets/ticker/:ticker", controller.getAssetsByTicker);

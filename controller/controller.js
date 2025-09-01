@@ -36,18 +36,16 @@ const createNewPortfolio = async (req, res) => {
 
 //get all user's portfolio
 async function getPortfoliosByUserId(req, res) {
-    try {
-        const userId = req.params.userId;
-        const portfolios = await model.getUserPortfolios(userId);
-        if (portfolios.length > 0) {
-            res.status(200).json({ portfolios });
-        } else {
-            res.status(404).json({ message: `No portfolios found for user ${userId}` });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-        console.error("error fetching user portfolios:", error);
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+    const userId = req.user.id;
+    const portfolios = await model.getPortfoliosByUserId(userId);
+    res.json({ portfolios });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 }
 
 // get all assets in a portfolio
