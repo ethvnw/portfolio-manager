@@ -20,6 +20,7 @@
                         "name": "userId",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the user",
                         "schema": { "type": "integer" }
                     }
                 ],
@@ -38,7 +39,6 @@
                                     }
                                 }
                             }
-                        }
                     },
                     "404": { "description": "No portfolios found for user" }
                 }
@@ -52,6 +52,7 @@
                         "name": "portfolioId",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the portfolio",
                         "schema": { "type": "integer" }
                     }
                 ],
@@ -84,12 +85,14 @@
                         "name": "portfolioId",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the portfolio",
                         "schema": { "type": "integer" }
                     },
                     {
                         "name": "category",
                         "in": "path",
                         "required": true,
+                        "description": "Category of the assets",
                         "schema": { "type": "string" }
                     }
                 ],
@@ -122,12 +125,14 @@
                         "name": "portfolioId",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the portfolio",
                         "schema": { "type": "integer" }
                     },
                     {
                         "name": "ticker",
                         "in": "path",
                         "required": true,
+                        "description": "Ticker of the asset",
                         "schema": { "type": "string" }
                     }
                 ],
@@ -160,12 +165,14 @@
                         "name": "portfolioId",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the portfolio",
                         "schema": { "type": "integer" }
                     },
                     {
                         "name": "type",
                         "in": "path",
                         "required": true,
+                        "description": "Type of the asset (buy, sell, keep)",
                         "schema": { "type": "string" }
                     }
                 ],
@@ -198,6 +205,7 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the asset",
                         "schema": { "type": "integer" }
                     }
                 ],
@@ -208,8 +216,9 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "type": { "type": "string" }
-                                }
+                                    "type": { "type": "string", "description": "New type of the asset" }
+                                },
+                                "required": ["type"]
                             }
                         }
                     }
@@ -228,6 +237,7 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the asset",
                         "schema": { "type": "integer" }
                     }
                 ],
@@ -245,6 +255,7 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "description": "ID of the portfolio",
                         "schema": { "type": "integer" }
                     }
                 ],
@@ -264,8 +275,8 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "name": { "type": "string" },
-                                    "description": { "type": "string" }
+                                    "name": { "type": "string", "description": "Name of the portfolio" },
+                                    "description": { "type": "string", "description": "Description of the portfolio" }
                                 },
                                 "required": ["name"]
                             }
@@ -285,6 +296,7 @@
                 }
             }
         }
+    }
     },
     "components": {
         "schemas": {
