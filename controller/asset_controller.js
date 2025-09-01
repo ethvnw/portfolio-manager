@@ -64,7 +64,9 @@ const getAssetPrice = async (symbol, date = null) => {
         period1: date,
         period2: nextDay,
       });
-      return parseFloat(result.quotes[0].close.toFixed(2));
+      if (result.quotes.length > 0) {
+        return parseFloat(result.quotes[0].close.toFixed(2));
+      }
     } catch (error) {
       console.error("Error fetching asset historical price:", error);
       throw error;
@@ -164,14 +166,17 @@ const sellAsset = async (req, res) => {
 
     if (parseFloat(quantity) === parseFloat(asset.quantity)) {
       await Asset.destroy({ where: { id: asset_id } });
-      req.flash("notice", "Asset removed successfully");
+      req.flash("notice", "Asset removed successfully.");
       return res.redirect(`/portfolios/${portfolio.id}`);
     } else {
       await Asset.update(
         { quantity: asset.quantity - quantity, type: "sell" },
         { where: { id: asset_id } }
       );
-      req.flash("notice", `${parseFloat(quantity)} units removed successfully`);
+      req.flash(
+        "notice",
+        `${parseFloat(quantity)} units removed successfully.`
+      );
       res.redirect(`/portfolios/${portfolio.id}`);
     }
   } catch (error) {
@@ -192,7 +197,7 @@ const syncAssets = async (req, res) => {
         { where: { id: stock.id } }
       );
     }
-    req.flash("notice", "Assets synchronised successfully");
+    req.flash("notice", "Assets synchronised successfully.");
     res.redirect(`/portfolios/${req.params.id}`);
   } catch (error) {
     console.error("Error synchronising assets:", error);

@@ -1,22 +1,40 @@
-:root {
+/* :root {
   --accent-color: hsl(221, 32%, 15%);
+} */
+
+[data-bs-theme="light"] {
+  --navbar-bg: hsl(221, 32%, 15%);
+}
+
+[data-bs-theme="dark"] {
+  --navbar-bg: hsl(210, 11%, 15%);
 }
 
 .auth-background {
-  background-color: var(--accent-color);
-}
-
-.dark-mode {
-  background-color: hsl(221, 32%, 10%);
-  color: white;
-
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-text);
 }
 
 aside {
-  background-color: var(--accent-color);
+  background-color: var(--navbar-bg) !important;
+  color: var(--navbar-text);
   width: 16rem;
+  height: 100vh !important;
+}
+
+aside nav {
+  height: 100% !important;
+}
+
+aside a,
+.nav-link {
+  color: var(--navbar-text);
 }
 
 .nav-link:hover, .nav-link:focus {
   background: hsl(221, 32%, 10%);
+}
+
+.alert {
+  transition: opacity 0.5s ease;
 }

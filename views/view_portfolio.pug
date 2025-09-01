@@ -4,9 +4,12 @@ block content
   .d-flex.justify-content-between.align-items-center.mb-4
     h1 #{portfolio.name} Details
     .d-flex.gap-2
-      a.btn.btn-outline-primary(href=`/portfolios/${portfolio.id}/sync`) Sync Prices
-      a.btn.btn-primary(href=`/portfolios/${portfolio.id}/buy-asset`) Add Asset
-      a.btn.btn-secondary(href=`/portfolios/${portfolio.id}/sell-asset`) Remove Asset
+      a.btn.btn-outline-primary(href=`/portfolios/${portfolio.id}/sync`)
+        i.bi.bi-arrow-clockwise.fst-normal &nbsp; Sync Prices
+      a.btn.btn-primary(href=`/portfolios/${portfolio.id}/buy-asset`)
+        i.bi.bi-plus-circle.text-light.fst-normal &nbsp; Add Asset
+      a.btn.btn-secondary(href=`/portfolios/${portfolio.id}/sell-asset`)
+        i.bi.bi-dash-circle.text-light.fst-normal &nbsp; Remove Asset
 
   table.table.table-hover.table-striped
     thead

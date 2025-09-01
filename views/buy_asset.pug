@@ -24,12 +24,7 @@ block content
 
     .mb-3.d-none#ticker-container
       label.form-label(for="assetTicker") Ticker
-
-      .d-flex.gap-2.align-items-end
-        .flex-grow-1
-          input.form-control(type="text" id="assetTicker" name="assetTicker" placeholder="Enter asset ticker" required)
-
-        button.btn.btn-secondary.mt-2(type="button" id="fetchPriceBtn") Fetch Price
+      input.form-control(type="text" id="assetTicker" name="assetTicker" placeholder="Enter asset ticker" required)
       
       p#stock-price.mt-2.text-muted &nbsp;
 
@@ -43,14 +38,31 @@ block content
         input.form-control(type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required)
 
     .mb-3
-        button.float-end.btn.btn-primary(type="submit") Add Asset
-      
+        button.float-end.btn.btn-primary(type="submit")
+          i.bi.bi-plus-circle.text-light.fst-normal &nbsp; Add Asset
 
   script.
-    const fetchPriceBtn = document.getElementById('fetchPriceBtn');
+    const assetTypeSelect = document.getElementById('assetType');
+    const tickerContainer = document.getElementById('ticker-container');
+    const assetTickerInput = document.getElementById('assetTicker');
+
+    function updateTickerVisibility() {
+      const selectedType = assetTypeSelect.value;
+      if (selectedType === 'stocks') {
+        tickerContainer.classList.remove('d-none');
+        assetTickerInput.setAttribute('required', 'required');
+      } else {
+        tickerContainer.classList.add('d-none');
+        assetTickerInput.removeAttribute('required');
+      }
+    }
+
+    assetTypeSelect.addEventListener('change', updateTickerVisibility);
+
+  script.
     const stockPriceDisplay = document.getElementById('stock-price');
 
-    fetchPriceBtn.addEventListener('click', () => {
+    assetTickerInput.addEventListener('blur', () => {
       const assetTicker = assetTickerInput.value;
       const purchaseDate = document.getElementById('buyDate').value;
 
@@ -71,22 +83,3 @@ block content
           });
       }
     });
-
-
-  script.
-    const assetTypeSelect = document.getElementById('assetType');
-    const tickerContainer = document.getElementById('ticker-container');
-    const assetTickerInput = document.getElementById('assetTicker');
-
-    function updateTickerVisibility() {
-      const selectedType = assetTypeSelect.value;
-      if (selectedType === 'stocks') {
-        tickerContainer.classList.remove('d-none');
-        assetTickerInput.setAttribute('required', 'required');
-      } else {
-        tickerContainer.classList.add('d-none');
-        assetTickerInput.removeAttribute('required');
-      }
-    }
-
-    assetTypeSelect.addEventListener('change', updateTickerVisibility);

@@ -3,7 +3,8 @@ extends layout
 block content
   .d-flex.justify-content-between.align-items-center.mb-4
     h1 Portfolios
-    a.btn.btn-primary(href="/new-portfolio") Create New Portfolio
+    a.btn.btn-primary(href="/new-portfolio")
+      i.bi.bi-plus-circle.text-light.fst-normal &nbsp; New Portfolio
 
 
   if (portfolios.length === 0)
@@ -17,5 +18,7 @@ block content
             p= portfolio.description
 
             .d-flex.gap-2.justify-content-end
-              a.btn.btn-outline-primary(href=`/portfolios/${portfolio.id}`) View Details
-              a.btn.btn-danger(href=`/portfolios/${portfolio.id}/delete`) Delete
+              a.btn.btn-outline-primary(href=`/portfolios/${portfolio.id}`)
+                i.bi.bi-eye.fst-normal &nbsp; View Details
+              a.btn.btn-danger(href=`/portfolios/${portfolio.id}/delete`)
+                i.bi.bi-trash.text-light.fst-normal &nbsp; Delete
