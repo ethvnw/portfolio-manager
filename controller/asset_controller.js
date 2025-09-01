@@ -102,7 +102,7 @@ const buyAsset = async (req, res) => {
   }
 
   const { assetName, assetTicker, assetType, quantity, buyDate } = req.body;
-  const buyPrice = await getAssetPrice(assetTicker, buyDate);
+  const buyPrice = assetTicker ? await getAssetPrice(assetTicker, buyDate) : 0;
   try {
     const newAsset = await Asset.create({
       user_id: req.user.id,
