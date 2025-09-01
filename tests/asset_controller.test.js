@@ -149,11 +149,12 @@ describe("Asset Controller", () => {
         ticker: "AAPL",
         category: "stock",
         quantity: 10,
-        buy_price: 150.0,
+        buy_price: 152,
         current_price: 152.0,
         currency: "USD",
         type: "buy",
         portfolio_id: 1,
+        purchased_at: undefined,
       });
       expect(req.flash).toHaveBeenCalledWith(
         "notice",
@@ -176,11 +177,12 @@ describe("Asset Controller", () => {
         ticker: "N/A",
         category: "stock",
         quantity: 10,
-        buy_price: 150.0,
+        buy_price: 0,
         current_price: 0,
         currency: "USD",
         type: "buy",
         portfolio_id: 1,
+        purchased_at: undefined,
       });
     });
 
@@ -253,7 +255,7 @@ describe("Asset Controller", () => {
       );
       expect(req.flash).toHaveBeenCalledWith(
         "notice",
-        "Asset sold successfully!"
+        "5 units removed successfully."
       );
       expect(res.redirect).toHaveBeenCalledWith("/portfolios/1");
     });
