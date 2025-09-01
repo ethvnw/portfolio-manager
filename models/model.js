@@ -11,7 +11,8 @@ const seq = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql",
-});
+  }
+);
 
 const User = seq.define(
   "User",
@@ -109,7 +110,6 @@ const Asset = seq.define(
     },
     purchased_at: {
       type: DataTypes.DATE,
-      defaultValue: seq.literal("CURRENT_TIMESTAMP"),
     },
     type: {
       type: DataTypes.ENUM("buy", "sell", "keep"),
@@ -121,8 +121,6 @@ const Asset = seq.define(
     timestamps: false,
   }
 );
-
-
 
 // get all portfolios a user has
 async function getPortfoliosByUserId(userId) {
@@ -141,9 +139,9 @@ async function getAssetsByPortfolioId(portfolioId) {
 // get assets by category in a portfolio
 async function getAssetsByCategory(portfolioId, category) {
   return await Asset.findAll({
-    where: { 
-      portfolio_id: portfolioId, 
-      category: category 
+    where: {
+      portfolio_id: portfolioId,
+      category: category,
     },
   });
 }
@@ -151,9 +149,9 @@ async function getAssetsByCategory(portfolioId, category) {
 // get assets by ticker in a portfolio
 async function getAssetsByTicker(portfolioId, ticker) {
   return await Asset.findAll({
-    where: { 
-      portfolio_id: portfolioId, 
-      ticker: ticker 
+    where: {
+      portfolio_id: portfolioId,
+      ticker: ticker,
     },
   });
 }
@@ -179,24 +177,20 @@ async function getUserByEmail(email) {
       email: email,
     },
   });
-
 }
 
 // change asset type
 async function changeAssetType(assetId, newType) {
-  return await Asset.update(
-    { type: newType },
-    { where: { id: assetId } }
-  );
+  return await Asset.update({ type: newType }, { where: { id: assetId } });
 }
 
 // delete asset in a portfolio if sold
 async function deleteAssetIfSold(assetId) {
   const asset = await Asset.findOne({ where: { id: assetId } });
-  if (asset && asset.type === 'sell') {
+  if (asset && asset.type === "sell") {
     return await Asset.destroy({ where: { id: assetId } });
   }
-  return 0; 
+  return 0;
 }
 
 // delete portfolio if empty
@@ -207,7 +201,6 @@ async function deletePortfolioIfEmpty(portfolioId) {
   }
   return 0;
 }
-
 
 //create new portfolio
 async function createNewPortfolio(userId, name, description) {
@@ -233,5 +226,5 @@ module.exports = {
   changeAssetType,
   deleteAssetIfSold,
   deletePortfolioIfEmpty,
-  createNewPortfolio
+  createNewPortfolio,
 };

@@ -9,11 +9,13 @@ block content
   if (portfolios.length === 0)
     p No portfolios have been created.
   else
-    .row.row-cols-3.g-4
+    .d-flex.flex-column.gap-2
       each portfolio in portfolios
-        .col
-          .card
-            .card-body
-              h2= portfolio.name
-              p= portfolio.description
-              a.btn.btn-secondary(href=`/portfolios/${portfolio.id}`) View Details
+        .card
+          .card-body
+            h2= portfolio.name
+            p= portfolio.description
+
+            .d-flex.gap-2.justify-content-end
+              a.btn.btn-outline-primary(href=`/portfolios/${portfolio.id}`) View Details
+              a.btn.btn-danger(href=`/portfolios/${portfolio.id}/delete`) Delete

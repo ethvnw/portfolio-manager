@@ -48,6 +48,16 @@ router.post(
   ensureAuthenticated,
   assetController.sellAsset
 );
+router.get(
+  "/portfolios/:id/sync",
+  ensureAuthenticated,
+  assetController.syncAssets
+);
+router.get(
+  "/portfolios/:id/delete",
+  ensureAuthenticated,
+  assetController.deletePortfolio
+);
 
 // restful API routes
 // router.get("/users/:email", controller.getUserByEmail);
