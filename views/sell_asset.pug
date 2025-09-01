@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1.mb-4 Sell Asset from #{portfolio.name}
+  h1.mb-4 Remove Asset from #{portfolio.name}
 
   form(action=`/portfolios/${portfolio.id}/sell-asset` method="POST")
     .mb-3
@@ -14,8 +14,6 @@ block content
     .mb-3
         label.form-label(for="quantity") Quantity
         input.form-control(type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required)
+
     .mb-3
-        label.form-label(for="price") Selling Price (per unit)
-        input.form-control(type="number" id="price" name="price" step="0.01" placeholder="Enter selling price" required)
-    .mb-3
-        button.btn.btn-primary.float-end(type="submit") Sell Asset
+        button.btn.btn-primary.float-end(type="submit") Remove Asset

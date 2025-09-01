@@ -1,13 +1,17 @@
 extends layout 
 
 block content
-  h1.mb-4 Buy Asset for #{portfolio.name}
+  h1.mb-4 Add Asset for #{portfolio.name}
 
   form(action=`/portfolios/${portfolio.id}/buy-asset` method="POST")
     .mb-3
         label.form-label(for="assetName") Name
         input.form-control(type="text" id="assetName" name="assetName" placeholder="Enter asset name" required)
 
+    .mb-3
+      label.form-label(for="buyDate") Purchase Date
+      input.form-control(type="date" id="buyDate" name="buyDate" max=new Date().toISOString().split('T')[0] required)
+      
     .mb-3
       label.form-label(for="assetType") Type
       select.form-select(id="assetType" name="assetType" required)
@@ -25,36 +29,44 @@ block content
         .flex-grow-1
           input.form-control(type="text" id="assetTicker" name="assetTicker" placeholder="Enter asset ticker" required)
 
-        button.btn.btn-secondary(type="button" id="fetch-price-btn") Fetch Current Price
+        button.btn.btn-secondary.mt-2(type="button" id="fetchPriceBtn") Fetch Price
       
-      p#current-price.mt-2.text-muted Current Price:
+      p#stock-price.mt-2.text-muted &nbsp;
 
-    .mb-3
-      label.form-label(for="buyPrice") Buy Price (per unit)
-      input.form-control(type="number" id="buyPrice" name="buyPrice" step="0.01" placeholder="Enter buy price" required)
+    //- .mb-3
+    //-   label.form-label(for="buyPrice") Buy Price (per unit)
+    //-   input.form-control(type="number" id="buyPrice" name="buyPrice" step="0.01" placeholder="Enter buy price" required)
+
 
     .mb-3
         label.form-label(for="quantity") Quantity
         input.form-control(type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required)
 
     .mb-3
-        button.float-end.btn.btn-primary(type="submit") Buy Asset
+        button.float-end.btn.btn-primary(type="submit") Add Asset
       
 
   script.
-    const fetchPriceBtn = document.getElementById('fetch-price-btn');
-    const currentPriceDisplay = document.getElementById('current-price');
+    const fetchPriceBtn = document.getElementById('fetchPriceBtn');
+    const stockPriceDisplay = document.getElementById('stock-price');
 
     fetchPriceBtn.addEventListener('click', () => {
       const assetTicker = assetTickerInput.value;
+      const purchaseDate = document.getElementById('buyDate').value;
+
+      if (purchaseDate === '') {
+        alert('Please select a purchase date first.');
+        return;
+      }
+
       if (assetTicker) {
-        fetch(`/asset-current-price?symbol=${assetTicker}`)
+        fetch(`/asset-current-price?symbol=${assetTicker}&date=${purchaseDate}`)
           .then(response => response.json())
           .then(data => {
-            currentPriceDisplay.textContent = `Current Price: $${data.price}`;
+            stockPriceDisplay.textContent = `Price on ${purchaseDate}: $${data.price}`;
           })
           .catch(error => {
-            currentPriceDisplay.textContent = 'Error fetching price';
+            stockPriceDisplay.textContent = 'Error fetching price';
             console.error('Error fetching asset price:', error);
           });
       }

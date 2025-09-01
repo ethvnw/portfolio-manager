@@ -1,5 +1,6 @@
 const {
   getAssetsByPortfolioId,
+  getAssetsByCategory,
   getPortfoliosByUserId,
   Asset,
   Portfolio,
@@ -25,23 +26,56 @@ const viewPortfolio = async (req, res) => {
   res.render("view_portfolio", { portfolio, portfolioItems });
 };
 
+const deletePortfolio = async (req, res) => {
+  const { id } = req.params;
+  const portfolio = await Portfolio.findOne({
+    where: { id, user_id: req.user.id },
+  });
+  if (!portfolio) {
+    req.flash("error", "Portfolio not found.");
+    return res.redirect("/portfolios");
+  }
+  const assets = await getAssetsByPortfolioId(id);
+  if (assets.length > 0) {
+    req.flash("error", "Portfolio is not empty.");
+    return res.redirect("/portfolios");
+  }
+  await portfolio.destroy();
+  req.flash("notice", "Portfolio deleted successfully.");
+  res.redirect("/portfolios");
+};
 
+const getAssetPrice = async (symbol, date = null) => {
+  if (!date) {
+    try {
+      const result = await yahooFinance.quote(symbol);
+      return result.regularMarketPrice;
+    } catch (error) {
+      console.error("Error fetching asset current price:", error);
+      throw error;
+    }
+  } else {
+    try {
+      date = new Date(date);
+      const nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
 
-
-const getCurrentAssetPrice = async (symbol) => {
-  try {
-    const result = await yahooFinance.quote(symbol);
-    return result.regularMarketPrice;
-  } catch (error) {
-    console.error("Error fetching asset current price:", error);
-    throw error;
+      const result = await yahooFinance.chart(symbol, {
+        period1: date,
+        period2: nextDay,
+      });
+      return parseFloat(result.quotes[0].close.toFixed(2));
+    } catch (error) {
+      console.error("Error fetching asset historical price:", error);
+      throw error;
+    }
   }
 };
 
 const assetCurrentPrice = async (req, res) => {
-  const { symbol } = req.query;
+  const { symbol, date } = req.query;
   try {
-    const currentPrice = await getCurrentAssetPrice(symbol);
+    const currentPrice = await getAssetPrice(symbol, date);
     res.json({ price: currentPrice });
   } catch (error) {
     console.error("Error fetching asset current price:", error);
@@ -67,7 +101,8 @@ const buyAsset = async (req, res) => {
     return res.redirect("/portfolios");
   }
 
-  const { assetName, assetTicker, assetType, quantity, buyPrice } = req.body;
+  const { assetName, assetTicker, assetType, quantity, buyDate } = req.body;
+  const buyPrice = await getAssetPrice(assetTicker, buyDate);
   try {
     const newAsset = await Asset.create({
       user_id: req.user.id,
@@ -75,11 +110,12 @@ const buyAsset = async (req, res) => {
       ticker: assetTicker ? assetTicker : "N/A",
       category: assetType,
       quantity: parseFloat(quantity),
-      buy_price: parseFloat(buyPrice),
-      current_price: assetTicker ? await getCurrentAssetPrice(assetTicker) : 0,
+      buy_price: buyPrice,
+      current_price: assetTicker ? await getAssetPrice(assetTicker) : 0,
       currency: "USD",
       type: "buy",
       portfolio_id: portfolio.id,
+      purchased_at: buyDate,
     });
     req.flash("notice", "Asset purchased successfully!");
     res.redirect(`/portfolios/${portfolio.id}`);
@@ -120,25 +156,48 @@ const sellAsset = async (req, res) => {
       return res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
     }
 
-    console.log("asset quantity:", asset.quantity);
-    console.log("quantity", quantity);
     // Check if the user is trying to sell more than they own
     if (parseFloat(quantity) > asset.quantity) {
       req.flash("error", "Insufficient asset quantity.");
       return res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
     }
 
-    await Asset.update(
-      { quantity: asset.quantity - quantity, type: "sell" },
-      { where: { id: asset_id } }
-    );
-
-    req.flash("notice", "Asset sold successfully!");
-    res.redirect(`/portfolios/${portfolio.id}`);
+    if (parseFloat(quantity) === parseFloat(asset.quantity)) {
+      await Asset.destroy({ where: { id: asset_id } });
+      req.flash("notice", "Asset removed successfully");
+      return res.redirect(`/portfolios/${portfolio.id}`);
+    } else {
+      await Asset.update(
+        { quantity: asset.quantity - quantity, type: "sell" },
+        { where: { id: asset_id } }
+      );
+      req.flash("notice", `${parseFloat(quantity)} units removed successfully`);
+      res.redirect(`/portfolios/${portfolio.id}`);
+    }
   } catch (error) {
     console.error("Error selling asset:", error);
     req.flash("error", "Error selling asset. Please try again.");
     res.redirect(`/portfolios/${portfolio.id}/sell-asset`);
+  }
+};
+
+const syncAssets = async (req, res) => {
+  const stocks = await getAssetsByCategory("stocks", req.params.id);
+
+  try {
+    for (const stock of stocks) {
+      const currentPrice = await getAssetPrice(stock.ticker);
+      await Asset.update(
+        { current_price: currentPrice },
+        { where: { id: stock.id } }
+      );
+    }
+    req.flash("notice", "Assets synchronised successfully");
+    res.redirect(`/portfolios/${req.params.id}`);
+  } catch (error) {
+    console.error("Error synchronising assets:", error);
+    req.flash("error", "Error synchronising assets. Please try again.");
+    res.redirect(`/portfolios/${req.params.id}`);
   }
 };
 
@@ -150,4 +209,6 @@ module.exports = {
   assetCurrentPrice,
   portfolio,
   viewPortfolio,
+  syncAssets,
+  deletePortfolio,
 };
