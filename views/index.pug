@@ -129,7 +129,7 @@ block content
       fetch(`/assets/portfolio/${portfolioId}`)
         .then(res => res.json())
         .then(data => {
-          const labels = data.assets.map(asset => asset.ticker || asset.name);
+          const labels = data.assets.filter(asset => asset.ticker !== 'N/A').map(asset => asset.ticker || asset.name);
           const purchased = data.assets.map(asset => asset.buy_price || 0);
           const current = data.assets.map(asset => asset.current_price || 0);
 
