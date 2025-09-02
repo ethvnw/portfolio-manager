@@ -62,13 +62,12 @@ router.get(
 // restful API routes
 // router.get("/users/:email", controller.getUserByEmail);
 router.get('/portfolio/user/:userId', ensureAuthenticated, controller.getPortfoliosByUserId);
-router.get("/assets/portfolio/:portfolioId", controller.getAssetsByPortfolioId);
-router.get("/assets/category/:category", controller.getAssetsByCategory);
-router.get("/assets/ticker/:ticker", controller.getAssetsByTicker);
-router.get("/assets/type/:type", controller.getAssetsByType);
-// router.post("/users", controller.createUser);
-router.put("/assets/:ticker/type", controller.changeAssetType);
-router.delete("/assets/:ticker", controller.deleteAssetIfSold);
-router.delete("/portfolio/:id", controller.deletePortfolioIfEmpty);
+router.get('/assets/portfolio/:portfolioId', controller.getAssetsByPortfolioId);
+router.get('/assets/category/:portfolioId/:category', controller.getAssetsByCategory);
+router.get('/assets/ticker/:portfolioId/:ticker', controller.getAssetsByTicker);
+router.get('/assets/type/:portfolioId/:type', controller.getAssetsByType);
+router.put('/assets/:id/type', controller.changeAssetType);
+router.delete('/assets/:id', controller.deleteAssetIfSold);
+router.delete('/portfolio/:id', controller.deletePortfolioIfEmpty);
 
 module.exports = router;

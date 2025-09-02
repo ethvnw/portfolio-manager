@@ -4,7 +4,6 @@ const {
   redirectIfAuthenticated,
 } = require("../middleware/auth");
 
-// Mock jwt module
 jest.mock("jsonwebtoken");
 
 describe("Auth Middleware", () => {

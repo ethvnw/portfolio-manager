@@ -1,339 +1,339 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "APEX Finance",
-        "description": "Platform to manage financial portfolio",
-        "version": "0.0.1"
-    },
-    "servers": [
-        {
-            "url": "http://localhost:3000",
-            "description": "Local server"
-        }
-    ],
-    "paths": {
-        "/portfolio/user/{userId}": {
-            "get": {
-                "summary": "Get all portfolios for a user",
-                "parameters": [
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the user",
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Portfolios found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "portfolios": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Portfolio" }
-                                        }
-                                    }
-                                }
-                            }
-                    },
-                    "404": { "description": "No portfolios found for user" }
-                }
-            }
-        },
-        "/assets/portfolio/{portfolioId}": {
-            "get": {
-                "summary": "Get all assets in a portfolio",
-                "parameters": [
-                    {
-                        "name": "portfolioId",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the portfolio",
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assets found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "assets": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Asset" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": { "description": "No assets found for portfolio" }
-                }
-            }
-        },
-        "/assets/category/{portfolioId}/{category}": {
-            "get": {
-                "summary": "Get assets by category in a portfolio",
-                "parameters": [
-                    {
-                        "name": "portfolioId",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the portfolio",
-                        "schema": { "type": "integer" }
-                    },
-                    {
-                        "name": "category",
-                        "in": "path",
-                        "required": true,
-                        "description": "Category of the assets",
-                        "schema": { "type": "string" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assets found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "assets": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Asset" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": { "description": "No assets found in category" }
-                }
-            }
-        },
-        "/assets/ticker/{portfolioId}/{ticker}": {
-            "get": {
-                "summary": "Get assets by ticker in a portfolio",
-                "parameters": [
-                    {
-                        "name": "portfolioId",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the portfolio",
-                        "schema": { "type": "integer" }
-                    },
-                    {
-                        "name": "ticker",
-                        "in": "path",
-                        "required": true,
-                        "description": "Ticker of the asset",
-                        "schema": { "type": "string" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assets found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "assets": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Asset" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": { "description": "No assets found with ticker" }
-                }
-            }
-        },
-        "/assets/type/{portfolioId}/{type}": {
-            "get": {
-                "summary": "Get assets by type in a portfolio",
-                "parameters": [
-                    {
-                        "name": "portfolioId",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the portfolio",
-                        "schema": { "type": "integer" }
-                    },
-                    {
-                        "name": "type",
-                        "in": "path",
-                        "required": true,
-                        "description": "Type of the asset (buy, sell, keep)",
-                        "schema": { "type": "string" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assets found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "assets": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Asset" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": { "description": "No assets found of type" }
-                }
-            }
-        },
-        "/assets/{id}/type": {
-            "put": {
-                "summary": "Change asset type",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the asset",
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "type": { "type": "string", "description": "New type of the asset" }
-                                },
-                                "required": ["type"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": { "description": "Asset type changed" },
-                    "500": { "description": "Error changing asset type" }
-                }
-            }
-        },
-        "/assets/{id}": {
-            "delete": {
-                "summary": "Delete asset if sold",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the asset",
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "responses": {
-                    "200": { "description": "Asset deleted" },
-                    "404": { "description": "Asset not found or not marked as sold" }
-                }
-            }
-        },
-        "/portfolio/{id}": {
-            "delete": {
-                "summary": "Delete portfolio if empty",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "description": "ID of the portfolio",
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "responses": {
-                    "200": { "description": "Portfolio deleted" },
-                    "404": { "description": "Portfolio not found or not empty" }
-                }
-            }
-        },
-        "/new-portfolio": {
-            "post": {
-                "summary": "Create a new portfolio",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": { "type": "string", "description": "Name of the portfolio" },
-                                    "description": { "type": "string", "description": "Description of the portfolio" }
-                                },
-                                "required": ["name"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Portfolio created",
-                        "content": {
-                            "application/json": {
-                                "schema": { "$ref": "#/components/schemas/Portfolio" }
-                            }
-                        }
-                    },
-                    "400": { "description": "Invalid input" }
-                }
-            }
-        }
+  "openapi": "3.0.3",
+  "info": {
+    "title": "APEX Finance",
+    "description": "Platform to manage financial portfolio",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local server"
     }
-    },
-    "components": {
-        "schemas": {
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": { "type": "integer" },
-                    "email": { "type": "string" },
-                    "hashed_pass": { "type": "string" }
+  ],
+  "paths": {
+    "/portfolio/user/{userId}": {
+      "get": {
+        "summary": "Get all portfolios for a user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the user",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Portfolios found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "portfolios": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Portfolio" }
+                    }
+                  }
                 }
-            },
-            "Portfolio": {
-                "type": "object",
-                "properties": {
-                    "id": { "type": "integer" },
-                    "user_id": { "type": "integer" },
-                    "name": { "type": "string" },
-                    "description": { "type": "string" },
-                    "created_at": { "type": "string", "format": "date-time" }
-                }
-            },
-            "Asset": {
-                "type": "object",
-                "properties": {
-                    "id": { "type": "integer" },
-                    "portfolio_id": { "type": "integer" },
-                    "ticker": { "type": "string" },
-                    "name": { "type": "string" },
-                    "category": { "type": "string" },
-                    "quantity": { "type": "number", "format": "float" },
-                    "buy_price": { "type": "number", "format": "float" },
-                    "current_price": { "type": "number", "format": "float" },
-                    "currency": { "type": "string" },
-                    "purchased_at": { "type": "string", "format": "date-time" },
-                    "type": { "type": "string", "enum": ["buy", "sell", "keep"] }
-                }
+              }
             }
+          },
+          "404": { "description": "No portfolios found for user" }
         }
+      }
+    },
+    "/assets/portfolio/{portfolioId}": {
+      "get": {
+        "summary": "Get all assets in a portfolio",
+        "parameters": [
+          {
+            "name": "portfolioId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the portfolio",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Asset" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "No assets found for portfolio" }
+        }
+      }
+    },
+    "/assets/category/{portfolioId}/{category}": {
+      "get": {
+        "summary": "Get assets by category in a portfolio",
+        "parameters": [
+          {
+            "name": "portfolioId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the portfolio",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "description": "Category of the assets",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Asset" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "No assets found in category" }
+        }
+      }
+    },
+    "/assets/ticker/{portfolioId}/{ticker}": {
+      "get": {
+        "summary": "Get assets by ticker in a portfolio",
+        "parameters": [
+          {
+            "name": "portfolioId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the portfolio",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "description": "Ticker of the asset",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Asset" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "No assets found with ticker" }
+        }
+      }
+    },
+    "/assets/type/{portfolioId}/{type}": {
+      "get": {
+        "summary": "Get assets by type in a portfolio",
+        "parameters": [
+          {
+            "name": "portfolioId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the portfolio",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "description": "Type of the asset (buy, sell, keep)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assets": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Asset" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "No assets found of type" }
+        }
+      }
+    },
+    "/new-portfolio": {
+      "post": {
+        "summary": "Create a new portfolio",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "description": "Name of the portfolio" },
+                  "description": { "type": "string", "description": "Description of the portfolio" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Portfolio created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Portfolio" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/assets/{id}/type": {
+      "put": {
+        "summary": "Change asset type",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the asset",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "description": "New type of the asset" }
+                },
+                "required": ["type"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Asset type changed" },
+          "500": { "description": "Error changing asset type" }
+        }
+      }
+    },
+    "/assets/{id}": {
+      "delete": {
+        "summary": "Delete asset if sold",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the asset",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Asset deleted" },
+          "404": { "description": "Asset not found or not marked as sold" }
+        }
+      }
+    },
+    "/portfolio/{id}": {
+      "delete": {
+        "summary": "Delete portfolio if empty",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the portfolio",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Portfolio deleted" },
+          "404": { "description": "Portfolio not found or not empty" }
+        }
+      }
     }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "email": { "type": "string" },
+          "hashed_pass": { "type": "string" }
+        }
+      },
+      "Portfolio": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "user_id": { "type": "integer" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Asset": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "portfolio_id": { "type": "integer" },
+          "ticker": { "type": "string" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "quantity": { "type": "number", "format": "float" },
+          "buy_price": { "type": "number", "format": "float" },
+          "current_price": { "type": "number", "format": "float" },
+          "currency": { "type": "string" },
+          "purchased_at": { "type": "string", "format": "date-time" },
+          "type": { "type": "string", "enum": ["buy", "sell", "keep"] }
+        }
+      }
+    }
+  }
 }

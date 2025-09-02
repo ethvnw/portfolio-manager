@@ -25,10 +25,20 @@ const createNewPortfolio = async (req, res) => {
       name,
       description,
     });
+
+    if (req.accepts && req.accepts('json')) {
+      return res.status(201).json(newPortfolio);
+    }
+
     req.flash("notice", "Portfolio created successfully!");
     res.redirect("/portfolios");
   } catch (error) {
     console.error("Error creating portfolio:", error);
+
+    if (req.accepts && req.accepts('json')) {
+      return res.status(400).json({ error: error.message });
+    }
+
     req.flash("error", "Error creating portfolio. Please try again.");
     res.redirect("/new-portfolio");
   }
