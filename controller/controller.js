@@ -26,7 +26,7 @@ const createNewPortfolio = async (req, res) => {
       description,
     });
 
-    if (req.accepts && req.accepts('json')) {
+    if (req.accepts && req.accepts('json') && !req.accepts('html')) {
       return res.status(201).json(newPortfolio);
     }
 
